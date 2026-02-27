@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# install-gnome-extension — Download and install a GNOME Shell extension by UUID
+#
+# Usage: install-gnome-extension <uuid>
+#
+# Queries extensions.gnome.org for the version matching the running GNOME Shell
+# version, downloads the zip, and installs it with gnome-extensions.
+
+set -euo pipefail
+
+UUID="${1:-}"
+if [ -z "$UUID" ]; then
+  echo "Usage: $(basename "$0") <extension-uuid>"
+  exit 1
+fi
+
+# Get current GNOME Shell version (major.minor)
+GNOME_VERSION=$(gnome-shell --version 2>/dev/null | grep -oP '\d+\.\d+' | head -1)
+if [ -z "$GNOME_VERSION" ]; then
+  echo "ERROR: Could not determine GNOME Shell version."
+  exit 1
+fi
+
+echo "Installing extension: $UUID (GNOME $GNOME_VERSION)"
+
+# Query extensions.gnome.org for download URL
+API_URL="https://extensions.gnome.org/extension-query/?search=${UUID}"
+INFO_URL="https://extensions.gnome.org/extension-info/?uuid=${UUID}&shell_version=${GNOME_VERSION}"
+
+DOWNLOAD_URL=$(curl -sf "$INFO_URL" | \
+  python3 -c "import sys,json; d=json.load(sys.stdin); print('https://extensions.gnome.org' + d['download_url'])" \
+  2>/dev/null || true)
+
+if [ -z "$DOWNLOAD_URL" ]; then
+  echo "WARNING: Could not find download URL for $UUID on GNOME $GNOME_VERSION"
+  echo "  Try installing manually via https://extensions.gnome.org/extension/$(echo "$UUID" | cut -d@ -f1)/"
+  exit 1
+fi
+
+TMPFILE=$(mktemp --suffix=.zip)
+trap 'rm -f "$TMPFILE"' EXIT
+
+echo "Downloading from $DOWNLOAD_URL"
+curl -sL "$DOWNLOAD_URL" -o "$TMPFILE"
+
+gnome-extensions install --force "$TMPFILE"
+echo "Installed: $UUID"
+echo "Note: Log out and back in (or run 'gnome-shell --replace &') to enable the extension."

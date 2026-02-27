@@ -25,3 +25,16 @@ else
   echo "Staging ghostty via rpm-ostree..."
   sudo rpm-ostree install ghostty
 fi
+
+# ---------------------------------------------------------------------------
+# ddcutil — DDC/CI monitor control (brightness, contrast, etc.)
+# Requires i2c kernel module access; no Flatpak/brew equivalent for hardware use.
+# After reboot, add your user to the i2c group:
+#   sudo usermod -aG i2c $USER  (then log out and back in)
+# ---------------------------------------------------------------------------
+if rpm -q ddcutil &>/dev/null; then
+  echo "ddcutil already installed."
+else
+  echo "Staging ddcutil via rpm-ostree..."
+  sudo rpm-ostree install ddcutil
+fi

@@ -74,7 +74,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 | Module | Description |
 |---|---|
-| `rpm-ostree.sh` | Ghostty terminal (COPR) — staged, reboot required |
+| `rpm-ostree.sh` | Ghostty terminal (COPR), ddcutil — staged, reboot required |
 | `nvidia.sh` | RPM Fusion, akmod-nvidia, CUDA, container toolkit |
 
 **Tier 4 — sudo required**
@@ -111,6 +111,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 - **Space Bar** — workspaces in top bar
 - **Vitals** — CPU/RAM/temp in top bar
 - **Rectangle** — window snapping (like macOS Rectangle)
+- **Display Brightness (ddcutil)** — monitor brightness/contrast control via DDC/CI
 
 ---
 

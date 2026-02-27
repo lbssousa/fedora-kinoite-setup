@@ -33,6 +33,7 @@ EXTENSIONS=(
   "space-bar@luchrioh"                      # Named workspaces in top bar
   "Vitals@CoreCoding.com"                   # CPU/RAM/temp in top bar
   "rectangle@acristoffers.me"              # Window snapping (like macOS Rectangle)
+  "display-brightness-ddcutil@themightydeity.github.com" # Monitor brightness via ddcutil
 )
 
 echo "Installing GNOME extensions via gext..."

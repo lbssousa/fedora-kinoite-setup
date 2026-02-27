@@ -54,7 +54,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 | Module | Description |
 |---|---|
-| `system.sh` | Enable sshd, skip GNOME welcome tour |
+| `system.sh` | Skip GNOME welcome tour |
 | `brew.sh` | Install Homebrew (Linuxbrew), configure shell |
 | `dev-tools.sh` | Write mise shell hook (tools installed via Brewfile) |
 | `dotfiles.sh` | Clone `~/code/dotfiles`, stow nvim config |
@@ -76,6 +76,12 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 |---|---|
 | `rpm-ostree.sh` | Ghostty terminal (COPR) — staged, reboot required |
 | `nvidia.sh` | RPM Fusion, akmod-nvidia, CUDA, container toolkit |
+
+**Tier 4 — sudo required**
+
+| Module | Description |
+|---|---|
+| `sshd.sh` | Enable sshd — runs last so a skipped password doesn't block anything |
 
 ---
 

@@ -96,6 +96,13 @@ run_module "rpm-ostree packages" "$SCRIPT_DIR/install/rpm-ostree.sh"
 run_module "NVIDIA drivers"      "$SCRIPT_DIR/install/nvidia.sh"
 
 # ---------------------------------------------------------------------------
+# Tier 4 — sudo-required steps (last, so a skipped password doesn't block
+# anything above)
+# ---------------------------------------------------------------------------
+
+run_module "SSH daemon" "$SCRIPT_DIR/install/sshd.sh"
+
+# ---------------------------------------------------------------------------
 # Done
 # ---------------------------------------------------------------------------
 echo ""

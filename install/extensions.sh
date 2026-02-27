@@ -34,6 +34,7 @@ EXTENSIONS=(
   "Vitals@CoreCoding.com"                   # CPU/RAM/temp in top bar
   "rectangle@acristoffers.me"              # Window snapping (like macOS Rectangle)
   "display-brightness-ddcutil@themightydeity.github.com" # Monitor brightness via ddcutil
+  "hotedge@jonathan.jdoda.ca"              # Hot Edge — trigger activities by pushing to screen edge
 )
 
 echo "Installing GNOME extensions via gext..."
@@ -41,6 +42,9 @@ for uuid in "${EXTENSIONS[@]}"; do
   echo "  Installing $uuid"
   gext install "$uuid" || echo "  WARNING: failed to install $uuid"
 done
+
+# Disable Vitals by default — installed but off until manually enabled
+gnome-extensions disable "Vitals@CoreCoding.com" 2>/dev/null || true
 
 echo ""
 echo "Extensions installed. Enable them in Extension Manager, then log out"

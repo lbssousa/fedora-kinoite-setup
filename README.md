@@ -109,8 +109,9 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 - **Just Perfection** — shell tweaks, animation speed
 - **Caffeine** — prevent screen lock
 - **Space Bar** — workspaces in top bar
-- **Vitals** — CPU/RAM/temp in top bar
+- **Vitals** — CPU/RAM/temp in top bar (installed but disabled by default)
 - **Rectangle** — window snapping (like macOS Rectangle)
+- **Hot Edge** — trigger activities overview by pushing cursor to screen edge
 - **Display Brightness (ddcutil)** — monitor brightness/contrast control via DDC/CI
 
 ---

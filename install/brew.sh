@@ -45,4 +45,9 @@ eval "$("${BREW_PREFIX}/bin/brew" shellenv)"
 
 brew update
 
+# Install gum — used for interactive prompts during setup
+if ! command -v gum &>/dev/null; then
+  brew install gum
+fi
+
 echo "Homebrew setup complete."

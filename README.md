@@ -13,11 +13,7 @@ cd ~/code/silverblue-setup
 bash install.sh
 ```
 
-For NVIDIA systems:
-
-```bash
-bash install.sh --nvidia
-```
+The script detects your hardware and asks what to install via interactive prompts (Ghostty, NVIDIA drivers, etc.).
 
 ---
 

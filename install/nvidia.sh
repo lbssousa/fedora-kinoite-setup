@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 # nvidia.sh — NVIDIA drivers, CUDA, and container toolkit via rpm-ostree
 #
-# This script only runs when install.sh is called with --nvidia.
+# Runs when INSTALL_NVIDIA=true (set by install/choices.sh via gum prompt).
 # All changes require a reboot to take effect.
+
+if [ "${INSTALL_NVIDIA:-false}" != "true" ]; then
+  echo "NVIDIA drivers skipped (not selected)."
+  return 0
+fi
 
 # ---------------------------------------------------------------------------
 # Hardware sanity checks
@@ -59,12 +64,14 @@ sudo rpm-ostree install \
   xorg-x11-drv-nvidia \
   xorg-x11-drv-nvidia-cuda
 
-echo "Adding NVIDIA container toolkit repository..."
-curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
-  | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+if [ "${INSTALL_NVIDIA_CONTAINERS:-false}" = true ]; then
+  echo "Adding NVIDIA container toolkit repository..."
+  curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
+    | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
 
-echo "Installing NVIDIA container toolkit..."
-sudo rpm-ostree install nvidia-container-toolkit
+  echo "Installing NVIDIA container toolkit..."
+  sudo rpm-ostree install nvidia-container-toolkit
+fi
 
 echo ""
 echo "========================================================"

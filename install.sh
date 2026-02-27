@@ -58,15 +58,9 @@ detect_variant
 echo ""
 detect_hardware
 
-# Suggest --nvidia if GPU is detected and flag wasn't passed
-if [ "$HAS_NVIDIA" = true ] && [[ "${1:-}" != "--nvidia" ]]; then
-  echo ""
-  echo -e "\033[1;33m  NOTE: NVIDIA GPU detected. Re-run with --nvidia to install drivers:\033[0m"
-  echo "        bash install.sh --nvidia"
-fi
 if [ "$IS_VM" = true ]; then
   echo ""
-  echo "  Running in a VM — skipping NVIDIA driver install automatically."
+  echo "  Running in a VM — hardware-specific driver prompts will be skipped."
 fi
 
 # ---------------------------------------------------------------------------
@@ -77,6 +71,11 @@ fi
 
 run_module "System basics"   "$SCRIPT_DIR/install/system.sh"
 run_module "Homebrew"        "$SCRIPT_DIR/install/brew.sh"
+
+# Interactive choices — runs after brew so gum is available
+section "Setup choices"
+source "$SCRIPT_DIR/install/choices.sh"
+
 run_module "Developer tools" "$SCRIPT_DIR/install/dev-tools.sh"
 run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 
@@ -99,10 +98,7 @@ run_module "CLI tools"             "$SCRIPT_DIR/install/cli-tools.sh"
 # ---------------------------------------------------------------------------
 
 run_module "rpm-ostree packages" "$SCRIPT_DIR/install/rpm-ostree.sh"
-
-if [[ "${1:-}" == "--nvidia" ]]; then
-  run_module "NVIDIA drivers" "$SCRIPT_DIR/install/nvidia.sh"
-fi
+run_module "NVIDIA drivers"      "$SCRIPT_DIR/install/nvidia.sh"
 
 # ---------------------------------------------------------------------------
 # Done

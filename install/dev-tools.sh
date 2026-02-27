@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
-# dev-tools.sh — Developer toolchain: mise, Node.js, Neovim dependencies
+# dev-tools.sh — Write shell activation hooks for tools installed via Brewfile
+#
+# The Brewfile in ~/code/dotfiles installs mise, stow, neovim, ripgrep, fd,
+# and everything else. This script just ensures the shell hooks are written
+# so those tools activate correctly in new sessions.
 
-# Ensure brew is available
 if ! command -v brew &>/dev/null; then
   echo "ERROR: brew not found. Run install/brew.sh first."
   return 1
 fi
 
 # ---------------------------------------------------------------------------
-# mise — polyglot runtime version manager
+# mise shell hook
 # ---------------------------------------------------------------------------
-if command -v mise &>/dev/null; then
-  echo "mise already installed."
-else
-  brew install mise
-fi
-
-# Add mise shell hook to ~/.bashrc
 if ! grep -q 'mise activate' ~/.bashrc 2>/dev/null; then
   echo "" >> ~/.bashrc
   echo "# mise" >> ~/.bashrc
@@ -24,7 +20,6 @@ if ! grep -q 'mise activate' ~/.bashrc 2>/dev/null; then
   echo "Added mise hook to ~/.bashrc"
 fi
 
-# Add mise shell hook to ~/.zshrc if present
 if [ -f ~/.zshrc ]; then
   if ! grep -q 'mise activate' ~/.zshrc; then
     echo "" >> ~/.zshrc
@@ -34,40 +29,4 @@ if [ -f ~/.zshrc ]; then
   fi
 fi
 
-# ---------------------------------------------------------------------------
-# Node.js via mise
-# ---------------------------------------------------------------------------
-if ! command -v node &>/dev/null; then
-  eval "$(mise activate bash)"
-  mise install node@lts
-  mise use --global node@lts
-  echo "Node.js (LTS) installed via mise."
-else
-  echo "Node.js already available."
-fi
-
-# ---------------------------------------------------------------------------
-# Neovim dependencies (for dotfiles / LazyVim / etc.)
-# ---------------------------------------------------------------------------
-BREW_TOOLS=(
-  ripgrep   # telescope / fzf live grep
-  fd        # telescope file finder
-  lazygit   # git UI used by many nvim configs
-  tree-sitter
-)
-
-echo "Installing Neovim dependencies via brew..."
-for tool in "${BREW_TOOLS[@]}"; do
-  if brew list "$tool" &>/dev/null; then
-    echo "  $tool already installed."
-  else
-    brew install "$tool"
-  fi
-done
-
-# gnu-stow — needed by dotfiles.sh
-if ! command -v stow &>/dev/null; then
-  brew install stow
-fi
-
-echo "Developer tools setup complete."
+echo "Shell hooks written. Tools are installed via Brewfile (run dotfiles.sh)."

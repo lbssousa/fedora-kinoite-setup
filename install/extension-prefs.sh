@@ -14,8 +14,8 @@ echo "Applying extension preferences..."
 # ---------------------------------------------------------------------------
 # Just Perfection
 # ---------------------------------------------------------------------------
-# Speed up / disable animations (0=off, 1=minimal, higher=more)
-dconf write /org/gnome/shell/extensions/just-perfection/animation 1
+# Animation speed: 0=off, 1=default, 2=almost none (0.01x), 3=fastest, etc.
+dconf write /org/gnome/shell/extensions/just-perfection/animation 2
 
 # Hide elements you don't want in the shell
 dconf write /org/gnome/shell/extensions/just-perfection/activities-button false

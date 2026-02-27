@@ -81,6 +81,7 @@ run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 # these are independent — a failure in one doesn't affect the others.
 # ---------------------------------------------------------------------------
 
+run_module "Fonts"                 "$SCRIPT_DIR/install/fonts.sh"
 run_module "GNOME preferences"     "$SCRIPT_DIR/install/gnome.sh"
 run_module "Flatpaks"              "$SCRIPT_DIR/install/flatpaks.sh"
 run_module "GNOME extensions"      "$SCRIPT_DIR/install/extensions.sh"

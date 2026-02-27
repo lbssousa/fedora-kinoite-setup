@@ -63,6 +63,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 | Module | Description |
 |---|---|
+| `fonts.sh` | Meslo LGS DZ Nerd Font (from Nerd Fonts releases) |
 | `gnome.sh` | Dark mode, natural scroll, touchpad prefs |
 | `flatpaks.sh` | Add Flathub, install GUI apps |
 | `extensions.sh` | Install GNOME Shell extensions by UUID |

@@ -49,6 +49,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 | Module | Description |
 |---|---|
+| `rpm-ostree.sh` | Ghostty terminal (COPR) — staged, reboot required |
 | `nvidia.sh` | RPM Fusion, akmod-nvidia, CUDA, container toolkit |
 
 ---
@@ -62,6 +63,8 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 - **Deskflow** — KVM / keyboard+mouse sharing
 - **LocalSend** — local file transfer
 - **Whis** — speech-to-text
+- **VLC** — media player
+- **Moonlight** — game streaming client
 
 > Some Flatpak IDs are marked `# TODO: verify` in `install/flatpaks.sh` — confirm on Flathub before running.
 

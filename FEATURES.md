@@ -38,6 +38,8 @@ Full list of everything this setup installs and configures.
 | Deskflow | `org.deskflow.deskflow` | KVM / keyboard+mouse sharing |
 | LocalSend | `org.localsend.localsend_app` | LAN file transfer |
 | Whis | `ink.whis.Whis` | Speech-to-text |
+| VLC | `org.videolan.VLC` | Media player |
+| Moonlight | `com.moonlight_stream.Moonlight` | Game streaming client |
 
 ---
 
@@ -105,6 +107,14 @@ Full list of everything this setup installs and configures.
 | rivalcfg | pip (user) | SteelSeries mouse configuration |
 | python-kasa | pip (user) | TP-Link Kasa smart plug control |
 | Whis | Flatpak | Speech-to-text (listed above too) |
+
+---
+
+## rpm-ostree Layers
+
+| Package | Source | Purpose |
+|---|---|---|
+| Ghostty | COPR `scottames/ghostty` | Terminal emulator (no Flatpak available) |
 
 ---
 

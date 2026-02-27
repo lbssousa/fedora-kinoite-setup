@@ -33,6 +33,12 @@ FLATPAKS=(
 
   # Whis — speech-to-text
   "ink.whis.Whis"
+
+  # VLC — media player
+  "org.videolan.VLC"
+
+  # Moonlight — game streaming client
+  "com.moonlight_stream.Moonlight"
 )
 
 echo "Installing flatpaks..."

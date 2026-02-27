@@ -95,8 +95,10 @@ run_module "Firefox"               "$SCRIPT_DIR/install/firefox.sh"
 run_module "CLI tools"             "$SCRIPT_DIR/install/cli-tools.sh"
 
 # ---------------------------------------------------------------------------
-# Tier 3 — Opt-in hardware
+# Tier 3 — rpm-ostree layers (always staged last; single reboot covers all)
 # ---------------------------------------------------------------------------
+
+run_module "rpm-ostree packages" "$SCRIPT_DIR/install/rpm-ostree.sh"
 
 if [[ "${1:-}" == "--nvidia" ]]; then
   run_module "NVIDIA drivers" "$SCRIPT_DIR/install/nvidia.sh"

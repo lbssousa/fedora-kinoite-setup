@@ -31,11 +31,11 @@ Full list of everything this setup installs and configures.
 
 | App | Flatpak ID | Purpose |
 |---|---|---|
-| Pods | `com.github.marhkb.Pods` | Container management UI |
+| Bazaar | `io.github.kolunmi.Bazaar` | App browser / store UI |
 | Extension Manager | `com.mattjakeman.ExtensionManager` | GNOME Shell extension manager |
 | Blanket | `com.rafaelmardojai.Blanket` | Ambient sound / focus |
 | dconf Editor | `ca.desrt.dconf-editor` | Low-level GNOME settings editor |
-| Deskflow | `io.github.deskflow.deskflow` | KVM / keyboard+mouse sharing |
+| Deskflow | `org.deskflow.deskflow` | KVM / keyboard+mouse sharing |
 | LocalSend | `org.localsend.localsend_app` | LAN file transfer |
 | Whis | `ink.whis.Whis` | Speech-to-text |
 

@@ -12,9 +12,8 @@ echo "Flathub remote configured."
 # ---------------------------------------------------------------------------
 
 FLATPAKS=(
-  # Pods — container management UI
-  # TODO: verify app ID — confirm it hasn't changed on Flathub
-  "com.github.marhkb.Pods"
+  # Bazaar — app browser / store UI
+  "io.github.kolunmi.Bazaar"
 
   # GNOME Extension Manager
   "com.mattjakeman.ExtensionManager"
@@ -26,11 +25,10 @@ FLATPAKS=(
   "ca.desrt.dconf-editor"
 
   # Deskflow — KVM / keyboard+mouse sharing
-  # TODO: verify app ID on Flathub (may be io.github.deskflow.deskflow)
-  "io.github.deskflow.deskflow"
+  "org.deskflow.deskflow"
 
   # LocalSend — local file transfer
-  # TODO: verify app ID on Flathub (may be org.localsend.LocalSend)
+  # TODO: verify app ID — org.localsend.localsend_app vs org.localsend.LocalSend
   "org.localsend.localsend_app"
 
   # Whis — speech-to-text

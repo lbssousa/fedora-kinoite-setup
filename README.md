@@ -55,7 +55,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 ## Flatpak Apps Installed
 
-- **Pods** — container management UI
+- **Bazaar** — app browser / store UI
 - **Extension Manager** — GNOME extensions GUI
 - **Blanket** — ambient sound / focus
 - **dconf Editor** — low-level settings editor

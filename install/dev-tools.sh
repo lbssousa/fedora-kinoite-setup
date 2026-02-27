@@ -4,7 +4,7 @@
 # Ensure brew is available
 if ! command -v brew &>/dev/null; then
   echo "ERROR: brew not found. Run install/brew.sh first."
-  exit 1
+  return 1
 fi
 
 # ---------------------------------------------------------------------------

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
+# Note: -e (exit on error) is intentionally omitted at the top level so that
+# a single module failure does not abort the entire install. Each module that
+# sources this file runs in the same shell, so we use run_module() below to
+# catch and report failures without stopping the run.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -30,6 +34,20 @@ section() {
   echo ""
 }
 
+FAILED_MODULES=()
+
+run_module() {
+  local label="$1"
+  local script="$2"
+  section "$label"
+  if (set -euo pipefail; source "$script"); then
+    echo -e "\033[0;32m  ✓ $label done\033[0m"
+  else
+    echo -e "\033[1;31m  ✗ $label FAILED — continuing\033[0m"
+    FAILED_MODULES+=("$label")
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # Detect hardware
 # ---------------------------------------------------------------------------
@@ -55,40 +73,20 @@ fi
 # Run modules in order
 # ---------------------------------------------------------------------------
 
-section "System basics"
-source "$SCRIPT_DIR/install/system.sh"
-
-section "GNOME preferences"
-source "$SCRIPT_DIR/install/gnome.sh"
-
-section "Flatpaks"
-source "$SCRIPT_DIR/install/flatpaks.sh"
-
-section "Homebrew"
-source "$SCRIPT_DIR/install/brew.sh"
-
-section "Developer tools"
-source "$SCRIPT_DIR/install/dev-tools.sh"
-
-section "GNOME extensions"
-source "$SCRIPT_DIR/install/extensions.sh"
-
-section "Extension preferences"
-source "$SCRIPT_DIR/install/extension-prefs.sh"
-
-section "Firefox"
-source "$SCRIPT_DIR/install/firefox.sh"
-
-section "Dotfiles"
-source "$SCRIPT_DIR/install/dotfiles.sh"
-
-section "CLI tools"
-source "$SCRIPT_DIR/install/cli-tools.sh"
+run_module "System basics"        "$SCRIPT_DIR/install/system.sh"
+run_module "GNOME preferences"    "$SCRIPT_DIR/install/gnome.sh"
+run_module "Flatpaks"             "$SCRIPT_DIR/install/flatpaks.sh"
+run_module "Homebrew"             "$SCRIPT_DIR/install/brew.sh"
+run_module "Developer tools"      "$SCRIPT_DIR/install/dev-tools.sh"
+run_module "GNOME extensions"     "$SCRIPT_DIR/install/extensions.sh"
+run_module "Extension preferences" "$SCRIPT_DIR/install/extension-prefs.sh"
+run_module "Firefox"              "$SCRIPT_DIR/install/firefox.sh"
+run_module "Dotfiles"             "$SCRIPT_DIR/install/dotfiles.sh"
+run_module "CLI tools"            "$SCRIPT_DIR/install/cli-tools.sh"
 
 # NVIDIA is opt-in — only run if --nvidia flag is passed
 if [[ "${1:-}" == "--nvidia" ]]; then
-  section "NVIDIA drivers"
-  source "$SCRIPT_DIR/install/nvidia.sh"
+  run_module "NVIDIA drivers" "$SCRIPT_DIR/install/nvidia.sh"
 fi
 
 # ---------------------------------------------------------------------------
@@ -102,6 +100,13 @@ if [ "$SILVERBLUE" = true ]; then
   echo -e "\033[1;31m  REBOOT REQUIRED\033[0m"
   echo "  rpm-ostree changes (GNOME extensions, NVIDIA) take effect"
   echo "  after rebooting into the new deployment."
+fi
+if [ ${#FAILED_MODULES[@]} -gt 0 ]; then
+  echo -e "\033[1;31m  The following modules had errors:\033[0m"
+  for m in "${FAILED_MODULES[@]}"; do
+    echo "    - $m"
+  done
+  echo ""
 fi
 echo ""
 echo "  Manual follow-ups:"

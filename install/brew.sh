@@ -4,17 +4,20 @@
 if command -v brew &>/dev/null; then
   echo "Homebrew already installed, skipping install."
 else
-  echo "Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "Installing Homebrew (non-interactive)..."
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# Determine brew prefix (differs on ARM vs x86)
+# Determine brew prefix (differs on ARM vs x86, must check after install)
 if [ -d /home/linuxbrew/.linuxbrew ]; then
   BREW_PREFIX="/home/linuxbrew/.linuxbrew"
 elif [ -d "$HOME/.linuxbrew" ]; then
   BREW_PREFIX="$HOME/.linuxbrew"
+elif command -v brew &>/dev/null; then
+  BREW_PREFIX="$(brew --prefix)"
 else
-  BREW_PREFIX="$(brew --prefix 2>/dev/null || echo '/home/linuxbrew/.linuxbrew')"
+  echo "ERROR: Homebrew install appears to have failed — brew not found."
+  return 1
 fi
 
 BREW_SHELLENV="eval \"\$(${BREW_PREFIX}/bin/brew shellenv)\""

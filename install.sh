@@ -70,21 +70,34 @@ if [ "$IS_VM" = true ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Run modules in order
+# Tier 1 — Core dev environment
+# These run first. By the time they finish you have brew, mise, stow, and
+# your dotfiles. If anything in Tier 2 fails you can still work.
 # ---------------------------------------------------------------------------
 
-run_module "System basics"        "$SCRIPT_DIR/install/system.sh"
-run_module "GNOME preferences"    "$SCRIPT_DIR/install/gnome.sh"
-run_module "Flatpaks"             "$SCRIPT_DIR/install/flatpaks.sh"
-run_module "Homebrew"             "$SCRIPT_DIR/install/brew.sh"
-run_module "Developer tools"      "$SCRIPT_DIR/install/dev-tools.sh"
-run_module "GNOME extensions"     "$SCRIPT_DIR/install/extensions.sh"
-run_module "Extension preferences" "$SCRIPT_DIR/install/extension-prefs.sh"
-run_module "Firefox"              "$SCRIPT_DIR/install/firefox.sh"
-run_module "Dotfiles"             "$SCRIPT_DIR/install/dotfiles.sh"
-run_module "CLI tools"            "$SCRIPT_DIR/install/cli-tools.sh"
+run_module "System basics"   "$SCRIPT_DIR/install/system.sh"
+run_module "Homebrew"        "$SCRIPT_DIR/install/brew.sh"
+run_module "Developer tools" "$SCRIPT_DIR/install/dev-tools.sh"
+run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 
-# NVIDIA is opt-in — only run if --nvidia flag is passed
+# ---------------------------------------------------------------------------
+# Tier 2 — Desktop polish
+# Network-dependent and more likely to have transient failures (bad flatpak
+# IDs, extensions.gnome.org being slow, no Firefox profile yet). All of
+# these are independent — a failure in one doesn't affect the others.
+# ---------------------------------------------------------------------------
+
+run_module "GNOME preferences"     "$SCRIPT_DIR/install/gnome.sh"
+run_module "Flatpaks"              "$SCRIPT_DIR/install/flatpaks.sh"
+run_module "GNOME extensions"      "$SCRIPT_DIR/install/extensions.sh"
+run_module "Extension preferences" "$SCRIPT_DIR/install/extension-prefs.sh"
+run_module "Firefox"               "$SCRIPT_DIR/install/firefox.sh"
+run_module "CLI tools"             "$SCRIPT_DIR/install/cli-tools.sh"
+
+# ---------------------------------------------------------------------------
+# Tier 3 — Opt-in hardware
+# ---------------------------------------------------------------------------
+
 if [[ "${1:-}" == "--nvidia" ]]; then
   run_module "NVIDIA drivers" "$SCRIPT_DIR/install/nvidia.sh"
 fi

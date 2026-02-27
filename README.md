@@ -63,12 +63,12 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 | Module | Description |
 |---|---|
-| `gnome.sh` | Dark mode, natural scroll, 24h clock, night light, touchpad prefs |
+| `gnome.sh` | Dark mode, natural scroll, touchpad prefs |
 | `flatpaks.sh` | Add Flathub, install GUI apps |
 | `extensions.sh` | Install GNOME Shell extensions by UUID |
 | `extension-prefs.sh` | Apply dconf settings for extensions |
 | `firefox.sh` | arkenfox user.js + personal overrides |
-| `cli-tools.sh` | rivalcfg, python-kasa |
+| `cli-tools.sh` | rivalcfg |
 
 **Tier 3 — Opt-in hardware**
 
@@ -90,6 +90,8 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 - **Whis** — speech-to-text
 - **VLC** — media player
 - **Moonlight** — game streaming client
+- **Signal** — encrypted messaging
+- **Syncthing GTK** — file sync GUI
 
 > Some Flatpak IDs are marked `# TODO: verify` in `install/flatpaks.sh` — confirm on Flathub before running.
 

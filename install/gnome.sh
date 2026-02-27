@@ -6,9 +6,6 @@ echo "Applying GNOME settings..."
 # Dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-# 24-hour clock
-gsettings set org.gnome.desktop.interface clock-format '24h'
-
 # Show battery percentage
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 
@@ -25,10 +22,6 @@ gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enable
 
 # Natural scroll — mouse
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
-
-# Night light
-gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
-gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700
 
 # ---------------------------------------------------------------------------
 # Display resolution — hardware-specific, must be set manually.

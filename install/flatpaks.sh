@@ -42,6 +42,9 @@ FLATPAKS=(
 
   # Signal — encrypted messaging
   "org.signal.Signal"
+
+  # Syncthing GTK — file sync GUI
+  "me.kozec.syncthingtk"
 )
 
 echo "Installing flatpaks..."

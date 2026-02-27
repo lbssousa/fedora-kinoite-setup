@@ -2,14 +2,14 @@
 # cli-tools.sh — Miscellaneous CLI tools
 
 # rivalcfg — SteelSeries mouse configuration
+# Use pipx to avoid PEP 668 externally-managed-environment restrictions
 echo "Installing rivalcfg..."
-if command -v pip3 &>/dev/null || command -v pip &>/dev/null; then
-  PIP=$(command -v pip3 || command -v pip)
-  "$PIP" install --user rivalcfg
+if command -v pipx &>/dev/null; then
+  pipx install rivalcfg
   echo "rivalcfg installed."
 else
-  echo "WARNING: pip not found — skipping rivalcfg."
-  echo "  Install manually: pip install --user rivalcfg"
+  echo "WARNING: pipx not found — skipping rivalcfg."
+  echo "  Install manually: pipx install rivalcfg"
   echo "  See: https://github.com/flozz/rivalcfg"
 fi
 

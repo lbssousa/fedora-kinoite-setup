@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # flatpaks.sh — Add Flathub remote and install GUI applications
 
-# Ensure Flathub is available
-flatpak remote-add --if-not-exists flathub \
+# Ensure Flathub is available (--user avoids polkit system-operation restrictions)
+flatpak remote-add --user --if-not-exists flathub \
   https://dl.flathub.org/repo/flathub.flatpakrepo
 
 echo "Flathub remote configured."
@@ -41,6 +41,7 @@ FLATPAKS=(
   "com.moonlight_stream.Moonlight"
 
   # Signal — encrypted messaging
+  # NOTE: not available on aarch64 via Flathub; will skip gracefully on ARM
   "org.signal.Signal"
 
   # Syncthing GTK — file sync GUI
@@ -50,7 +51,7 @@ FLATPAKS=(
 echo "Installing flatpaks..."
 for app in "${FLATPAKS[@]}"; do
   echo "  Installing $app"
-  flatpak install --noninteractive flathub "$app" || \
+  flatpak install --user --noninteractive flathub "$app" || \
     echo "  WARNING: failed to install $app — check the app ID"
 done
 

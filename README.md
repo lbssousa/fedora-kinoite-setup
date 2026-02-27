@@ -74,8 +74,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 - **Caffeine** — prevent screen lock
 - **Space Bar** — workspaces in top bar
 - **Vitals** — CPU/RAM/temp in top bar
-- _(Tiling extension — see `install/extensions.sh` to choose one)_
-- _(Hot Edge extension — see `install/extensions.sh` to choose one)_
+- **Rectangle** — window snapping (like macOS Rectangle)
 
 ---
 

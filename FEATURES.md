@@ -64,8 +64,7 @@ Full list of everything this setup installs and configures.
 | Caffeine | `caffeine@patapon.info` | Prevent screen lock / suspend |
 | Space Bar | `space-bar@luchrioh` | Named workspaces in top bar |
 | Vitals | `Vitals@CoreCoding.com` | CPU/RAM/temp in top bar |
-| _(Tiling — TBD)_ | see `install/extensions.sh` | Window tiling / management |
-| _(Hot Edge — TBD)_ | see `install/extensions.sh` | Hot corner / edge actions |
+| Rectangle | `rectangle@acristoffers.me` | Window snapping (like macOS Rectangle) |
 
 ---
 

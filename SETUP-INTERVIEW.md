@@ -1,149 +1,78 @@
 # Setup Interview
 
-Questions to capture your preferences before finalizing the scripts.
-Work through these once, answer inline or in a separate doc, then update the relevant scripts.
+All questions resolved. This file is kept as a record of decisions made.
 
 ---
 
-## 1. Flatpak App IDs
+## 1. Flatpak App IDs — RESOLVED
+- Bazaar: `io.github.kolunmi.Bazaar` ✓ (confirmed from live machine)
+- Deskflow: `org.deskflow.deskflow` ✓ (confirmed from live machine)
+- LocalSend: `org.localsend.localsend_app` — keeping, user confirmed they want it
+- Added: VLC, Moonlight, Signal
 
-A few apps need their exact Flathub IDs confirmed.
+## 2. GNOME Extensions — RESOLVED
+- Tiling: Rectangle (`rectangle@acristoffers.me`) ✓ confirmed on EGO, GNOME 49
+- Hot corners: skipped — user doesn't use them
 
-- **Pods (Bazaar)**: Is the app you want `com.github.marhkb.Pods`? Or is it a different container/image browser — e.g. Bazaar (`io.github.nickvdyck.bazaar`)? What do you actually call it / use it for?
-- **Deskflow**: Is `io.github.deskflow.deskflow` the right ID, or is there a different KVM tool you prefer (Barrier, Input Leap)?
-- **LocalSend**: Is `org.localsend.localsend_app` correct? (The trailing `_app` is unusual — worth checking on Flathub.)
-- **Any other GUI apps** to add or remove from the flatpaks list?
+## 3. Extension Preferences — ACTION ITEM
+After first live install, configure extensions manually then run:
+```bash
+dconf dump /org/gnome/shell/extensions/ > extension-settings.dconf
+```
+Paste output to fill in stubs in `install/extension-prefs.sh`.
 
----
-
-## 2. GNOME Extensions
-
-Several extension choices need your input.
-
-- **Tiling / window management**: Which do you want?
-  - *Tiling Assistant* (`tiling-assistant@leleat-on-github`) — closest to macOS snapping
-  - *gTile* (`gTile@vibou`) — grid-based manual tiling
-  - *WinTile* (`WinTile@nowsci.com`) — basic quarter/half tiling
-  - Something else?
-
-- **Hot Edge / Hot Corners**: Which do you want?
-  - *Hot Edge* (`hotedge@jonathan.jdoda.ca`) — triggers overview at screen edge
-  - *Custom Hot Corners Extended* — more configurable
-  - None — you don't use hot corners?
-
-- **Any other extensions** you want added (e.g. AppIndicator, Blur My Shell, Media Controls)?
-
----
-
-## 3. Extension Preferences
-
-Once extensions are installed and you've configured them manually, the dconf keys need to be captured. For now:
-
-- **Just Perfection**: Are the defaults here okay (hide Activities button, hide app menu, minimal animation)? Any other elements to hide?
-- **Vitals**: Which sensors do you want visible in the top bar? (CPU %, CPU temp, RAM, network, storage, fan?)
-- **Space Bar**: Do you want empty workspaces shown? Any color/style preferences?
-
-> **Action**: After your first live install, run `dconf dump /org/gnome/shell/extensions/` and paste the output — I'll fill in the `extension-prefs.sh` stubs.
-
----
-
-## 4. Firefox Extensions
-
-Firefox can't auto-install extensions for personal profiles. The four currently documented for manual install are:
-
+## 4. Firefox Extensions — RESOLVED
+Manual install list in `install/firefox.sh`:
 1. uBlock Origin
-2. Bitwarden
-3. Dark Reader
-4. Vimium-FF
+2. 1Password
+3. Firefox Multi-Account Containers
+4. Facebook Container
+5. Privacy Badger (maybe)
 
-- Is this your actual set? Anything to add or remove?
-- Do you want to explore the `policies.json` approach for a managed Firefox install instead of manual steps?
+## 5. Firefox / Arkenfox Overrides — RESOLVED
+Using arkenfox defaults. Overrides in `configs/firefox/user-overrides.js`:
+- Blank new tab page
+- Restore previous session on startup
+- Pocket disabled
+Password saving stays disabled (arkenfox default) — using 1Password.
 
----
+## 6. Dotfiles / Stow Packages — RESOLVED
+`dotfiles.sh` clones the repo and runs `dotfiles/install.sh` directly,
+which handles `brew bundle` + all stow packages correctly.
 
-## 5. Firefox / Arkenfox Overrides
+## 7. Developer Tools — RESOLVED
+Brewfile in dotfiles repo is the source of truth. `dev-tools.sh` only
+writes the mise shell hook.
 
-The current `user-overrides.js` restores session, enables compact UI, disables Pocket. Review:
+## 8. rivalcfg — RESOLVED
+Install only, no config script. Handled in `install/cli-tools.sh`.
 
-- **Session restore on startup** — keep or prefer a blank start?
-- **Browsing history** — arkenfox default clears it on shutdown. Want to keep history between sessions?
-- **Password manager** — using Bitwarden (keep Firefox passwords disabled) or want Firefox's built-in saver?
-- **Any other privacy vs. convenience trade-offs** you've made in Firefox that should be captured here?
+## 9. Kasa — RESOLVED
+Removed entirely.
 
----
+## 10. GNOME Appearance — RESOLVED
+Use GNOME defaults. No custom fonts, icons, wallpaper, or scaling.
 
-## 6. Dotfiles / Stow Packages
+## 11. NVIDIA — RESOLVED
+gum prompts in `install/choices.sh` handle this at runtime based on
+hardware detection (NVIDIA, AMD, VM, multi-GPU).
 
-Currently only `stow nvim`. Do you stow any other packages from your dotfiles repo?
+## 12. Shell — RESOLVED
+Bash — whatever Silverblue ships with.
 
-- git config?
-- zsh / bash configs?
-- tmux?
-- Any other tool configs that live in dotfiles?
+## 13. Other Apps — RESOLVED
+Added: Signal, VLC, Moonlight, Ghostty.
+Skipped: Spotify, Discord, Obsidian, Wireshark.
 
-Also: should `dotfiles.sh` run any post-stow commands (e.g. install Neovim plugin manager, run `:Lazy sync`)?
+## 14. General — RESOLVED
 
----
+**Hostname:** Low priority. Set via `MACHINE_NAME` env var if needed
+(not currently implemented — add to system.sh when wanted).
 
-## 7. Developer Tools
-
-- **Node.js**: Install via `mise` (current plan) or via `brew install node` directly? Any preference on the version (LTS vs latest)?
-- **Python**: Do you want a managed Python version via mise too (e.g. `mise install python@3.12`)?
-- **Any other runtimes** managed by mise (Go, Rust, Ruby)?
-- **Any other brew CLI tools** not in the current list?
-
----
-
-## 8. rivalcfg / SteelSeries Mouse
-
-- Which SteelSeries mouse model(s) do you have? (rivalcfg supports many but config commands differ by model.)
-- Do you want a post-install script that actually applies your preferred DPI / button config, or just having rivalcfg installed is enough?
-
----
-
-## 9. Kasa Smart Plugs
-
-- Any specific `kasa` CLI commands you run regularly that should be scripted or aliased?
-- Should any aliases be added to `~/.bashrc` / `~/.zshrc`?
-
----
-
-## 10. GNOME Appearance
-
-- **Fonts**: Any preference for system font, monospace font, or document font beyond the defaults?
-- **Icons / cursor theme**: Do you use a custom icon set (e.g. Papirus) or GTK theme?
-- **Wallpaper**: Should the setup script set a wallpaper? (Path or URL?)
-- **Fractional scaling**: Do you use HiDPI or fractional scaling? If so, what factor?
-
----
-
-## 11. NVIDIA
-
-- Do you have an NVIDIA GPU in this machine? (NVIDIA setup is already opt-in via `--nvidia` flag.)
-- If yes: do you use GPU in containers / Podman today? (Affects whether nvidia-container-toolkit is worth the extra rpm-ostree layer.)
-- Any CUDA toolkit preferences (full CUDA vs. just driver)?
-
----
-
-## 12. Shell
-
-- Do you use bash, zsh, or fish as your primary shell?
-  - Current scripts add hooks to `~/.bashrc` and `~/.zshrc` (if present). Anything else needed for fish?
-- Any shell plugins or frameworks (oh-my-zsh, starship prompt, etc.) that should be part of the setup?
-
----
-
-## 13. Other Apps / Tools
-
-- Any **productivity apps** missing from the flatpak list (e.g. Obsidian, Notion, Slack, Signal, Telegram, Spotify)?
-- Any **creative tools** (GIMP, Inkscape, Blender, Darktable)?
-- Any **communication apps** (Thunderbird, Evolution, Discord)?
-- Any **development IDEs** beyond Neovim (VS Code, JetBrains)?
-
----
-
-## 14. General
-
-- Should `install.sh` prompt before each module ("Press Enter to continue...") or run silently end-to-end?
-- Should any modules be skippable with a flag (e.g. `--skip-nvidia`, `--skip-firefox`)?
-- Is there a machine name / hostname you always set on fresh installs?
+**Silent vs prompted:** Already resolved by design. The script is
+silent end-to-end *except* for `install/choices.sh` which asks 2-3
+hardware questions (Ghostty, NVIDIA drivers, container toolkit). Those
+prompts are unavoidable — they're why gum was added. You explicitly
+asked for hardware detection + user choice rather than hardcoded flags.
+Everything else (flatpaks, extensions, Firefox, dotfiles) runs without
+any pauses.

@@ -39,6 +39,9 @@ FLATPAKS=(
 
   # Moonlight — game streaming client
   "com.moonlight_stream.Moonlight"
+
+  # Signal — encrypted messaging
+  "org.signal.Signal"
 )
 
 echo "Installing flatpaks..."

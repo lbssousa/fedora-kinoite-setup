@@ -6,6 +6,11 @@ echo "Applying GNOME settings..."
 # Dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
+# Clock: 12-hour time only, no date
+gsettings set org.gnome.desktop.interface clock-format '12h'
+gsettings set org.gnome.desktop.interface clock-show-date false
+gsettings set org.gnome.desktop.interface clock-show-weekday false
+
 # Show battery percentage
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 

@@ -20,7 +20,6 @@ dconf write /org/gnome/shell/extensions/just-perfection/animation 1
 # Hide elements you don't want in the shell
 dconf write /org/gnome/shell/extensions/just-perfection/activities-button false
 dconf write /org/gnome/shell/extensions/just-perfection/app-menu false
-dconf write /org/gnome/shell/extensions/just-perfection/clock-menu-position 1
 dconf write /org/gnome/shell/extensions/just-perfection/workspace-switcher-size 15
 
 # ---------------------------------------------------------------------------

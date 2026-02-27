@@ -71,11 +71,6 @@ fi
 
 run_module "System basics"   "$SCRIPT_DIR/install/system.sh"
 run_module "Homebrew"        "$SCRIPT_DIR/install/brew.sh"
-
-# Interactive choices — runs after brew so gum is available
-section "Setup choices"
-source "$SCRIPT_DIR/install/choices.sh"
-
 run_module "Developer tools" "$SCRIPT_DIR/install/dev-tools.sh"
 run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 

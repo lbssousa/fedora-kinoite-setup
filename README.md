@@ -5,6 +5,35 @@ One entry point, ordered modular scripts — modeled after [Omakub](https://gith
 
 ---
 
+## Starting from scratch (e.g. an old ThinkPad)
+
+**1. Get Fedora Media Writer**
+
+| Platform | Link |
+|---|---|
+| Windows / macOS | [github.com/FedoraQt/MediaWriter/releases/latest](https://github.com/FedoraQt/MediaWriter/releases/latest) |
+| Linux | [flathub.org — Fedora Media Writer](https://flathub.org/apps/details/org.fedoraproject.MediaWriter) |
+
+**2. Write Silverblue to a USB drive**
+
+Open Media Writer → select **Fedora Silverblue** from the list → choose your USB drive → Write. Media Writer downloads the ISO and flashes it in one step.
+
+**3. Install Silverblue**
+
+Boot from the USB (usually F12 or F1 on ThinkPads to pick boot device). Follow the Anaconda installer — set your disk, create a user, reboot.
+
+**4. First boot — connect to the internet, open a terminal, then:**
+
+```bash
+git clone https://github.com/johnelliott/silverblue-setup ~/code/silverblue-setup
+cd ~/code/silverblue-setup
+bash install.sh
+```
+
+Reboot when it finishes. Done.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -13,7 +42,7 @@ cd ~/code/silverblue-setup
 bash install.sh
 ```
 
-The script detects your hardware and asks what to install via interactive prompts (Ghostty, NVIDIA drivers, etc.).
+The script detects your hardware automatically — NVIDIA drivers install if an NVIDIA GPU is found, everything else runs unconditionally. One reboot at the end.
 
 ---
 

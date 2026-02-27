@@ -30,13 +30,6 @@ gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
 gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700
 
-# Fonts / hinting
-gsettings set org.gnome.desktop.interface font-antialiasing 'rgba'
-gsettings set org.gnome.desktop.interface font-hinting 'slight'
-
-# Power — don't suspend on AC power
-gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-
 # ---------------------------------------------------------------------------
 # Display resolution — hardware-specific, must be set manually.
 # Uncomment and adjust for your monitor if needed:

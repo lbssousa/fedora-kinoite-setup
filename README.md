@@ -27,7 +27,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 |---|---|
 | `system.sh` | Enable sshd, skip GNOME welcome tour |
 | `brew.sh` | Install Homebrew (Linuxbrew), configure shell |
-| `dev-tools.sh` | mise, Node.js LTS, ripgrep, fd, lazygit, stow |
+| `dev-tools.sh` | Write mise shell hook (tools installed via Brewfile) |
 | `dotfiles.sh` | Clone `~/code/dotfiles`, stow nvim config |
 
 **Tier 2 — Desktop polish**
@@ -98,8 +98,6 @@ bash install/dev-tools.sh
   dconf dump /org/gnome/shell/extensions/ > my-extension-settings.dconf
   ```
   then update `install/extension-prefs.sh` with the output
-- **Tiling extension UUID** — uncomment your preferred option in `install/extensions.sh`
-- **Hot Edge extension UUID** — uncomment your preferred option in `install/extensions.sh`
 
 ---
 

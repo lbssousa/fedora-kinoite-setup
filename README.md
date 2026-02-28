@@ -133,11 +133,7 @@ bash install/dev-tools.sh
 
 - **Display resolution** — hardware-specific, set via Settings or `gnome-randr`
 - **Firefox extensions** — install manually from addons.mozilla.org (see `install/firefox.sh`)
-- **Extension dconf keys** — after manual configuration, run:
-  ```bash
-  dconf dump /org/gnome/shell/extensions/ > my-extension-settings.dconf
-  ```
-  then update `install/extension-prefs.sh` with the output
+- **Extension dconf keys** — see [Future Work](#capture-real-extension-preferences) for the plan to capture and automate these
 
 ---
 

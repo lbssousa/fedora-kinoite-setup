@@ -5,24 +5,11 @@ One entry point, ordered modular scripts — modeled after [Omakub](https://gith
 
 ---
 
-## Starting from scratch (e.g. an old ThinkPad)
+## Starting from scratch
 
-**1. Get Fedora Media Writer**
-
-| Platform | Link |
-|---|---|
-| Windows / macOS | [github.com/FedoraQt/MediaWriter/releases/latest](https://github.com/FedoraQt/MediaWriter/releases/latest) |
-| Linux | [flathub.org — Fedora Media Writer](https://flathub.org/apps/details/org.fedoraproject.MediaWriter) |
-
-**2. Write Silverblue to a USB drive**
-
-Open Media Writer → select **Fedora Silverblue** from the list → choose your USB drive → Write. Media Writer downloads the ISO and flashes it in one step.
-
-**3. Install Silverblue**
-
-Boot from the USB (usually F12 or F1 on ThinkPads to pick boot device). Follow the Anaconda installer — set your disk, create a user, reboot.
-
-**4. First boot — connect to the internet, open a terminal, then:**
+1. Flash **Fedora Silverblue** with [Fedora Media Writer](https://github.com/FedoraQt/MediaWriter/releases/latest)
+2. Boot from USB, run the Anaconda installer, reboot
+3. Connect to the internet, open a terminal:
 
 ```bash
 git clone https://github.com/johnelliott/silverblue-setup ~/code/silverblue-setup
@@ -30,172 +17,94 @@ cd ~/code/silverblue-setup
 bash install.sh
 ```
 
-Reboot when it finishes. Done.
-
----
-
-## Quick Start
-
-```bash
-git clone https://github.com/johnelliott/silverblue-setup ~/code/silverblue-setup
-cd ~/code/silverblue-setup
-bash install.sh
-```
-
-The script detects your hardware automatically — NVIDIA drivers install if an NVIDIA GPU is found, everything else runs unconditionally. One reboot at the end.
+NVIDIA drivers install automatically if an NVIDIA GPU is detected. One reboot at the end.
 
 ---
 
 ## What It Does
 
-Runs in two tiers. Tier 1 finishes first so your dev environment is usable even if something in Tier 2 fails.
+Runs in tiers. Tier 1 finishes first so your dev environment is usable even if something later fails.
 
-**Tier 1 — Core dev environment**
+| Tier | Modules | What happens |
+|------|---------|--------------|
+| **1 — Dev environment** | `system.sh` `brew.sh` `dev-tools.sh` `dotfiles.sh` | Homebrew, mise, starship, dotfiles (stow) |
+| **2 — Desktop polish** | `gnome.sh` `fonts.sh` `flatpaks.sh` `extensions.sh` `extension-prefs.sh` `firefox.sh` `cli-tools.sh` | GNOME prefs, Nerd Font, Flatpak apps, shell extensions, arkenfox Firefox |
+| **3 — Hardware** | `rpm-ostree.sh` `nvidia.sh` | Ghostty (COPR), ddcutil, NVIDIA drivers |
+| **4 — sudo** | `sudo-tweaks.sh` | sshd, GeoClue |
 
-| Module | Description |
+Each script can also be run standalone: `bash install/gnome.sh`
+
+<details>
+<summary>Full inventory (Flatpak IDs, extension UUIDs, GNOME prefs, etc.)</summary>
+
+### GNOME Preferences (`gnome.sh`)
+
+- Dark mode, 12-hour clock, battery percentage, center new windows
+- Window buttons: minimize, maximize, close
+- Natural scroll, tap-to-click, two-finger scroll
+- Keybindings: Ctrl+Alt+T → Ghostty, Ctrl+Alt+W → Whis dictation
+
+### Flatpak Apps
+
+| App | Flatpak ID |
 |---|---|
-| `system.sh` | Skip GNOME welcome tour |
-| `brew.sh` | Install Homebrew (Linuxbrew), configure shell |
-| `dev-tools.sh` | Write mise shell hook (tools installed via Brewfile) |
-| `dotfiles.sh` | Clone `~/code/dotfiles`, stow nvim config |
+| Bazaar | `io.github.kolunmi.Bazaar` |
+| Extension Manager | `com.mattjakeman.ExtensionManager` |
+| Blanket | `com.rafaelmardojai.Blanket` |
+| dconf Editor | `ca.desrt.dconf-editor` |
+| Deskflow | `org.deskflow.deskflow` |
+| LocalSend | `org.localsend.localsend_app` |
+| Whis | `ink.whis.Whis` |
+| VLC | `org.videolan.VLC` |
+| Moonlight | `com.moonlight_stream.Moonlight` |
+| Signal | `org.signal.Signal` |
+| Syncthing GTK | — |
 
-**Tier 2 — Desktop polish**
+### GNOME Shell Extensions
 
-| Module | Description |
+| Extension | UUID |
 |---|---|
-| `fonts.sh` | Meslo LGM DZ Nerd Font (from Nerd Fonts releases) |
-| `gnome.sh` | Dark mode, natural scroll, touchpad prefs |
-| `flatpaks.sh` | Add Flathub, install GUI apps |
-| `extensions.sh` | Install GNOME Shell extensions by UUID |
-| `extension-prefs.sh` | Apply dconf settings for extensions |
-| `firefox.sh` | arkenfox user.js + personal overrides |
-| `cli-tools.sh` | rivalcfg |
+| GSConnect | `gsconnect@andyholmes.github.io` |
+| Just Perfection | `just-perfection-desktop@just-perfection` |
+| Caffeine | `caffeine@patapon.info` |
+| Space Bar | `space-bar@luchrioh` |
+| Vitals | `Vitals@CoreCoding.com` |
+| Rectangle | `rectangle@acristoffers.me` |
+| Hot Edge | — |
+| Display Brightness (ddcutil) | — |
 
-**Tier 3 — Opt-in hardware**
+### Homebrew CLI Tools
 
-| Module | Description |
-|---|---|
-| `rpm-ostree.sh` | Ghostty terminal (COPR), ddcutil — staged, reboot required |
-| `nvidia.sh` | RPM Fusion, akmod-nvidia, CUDA, container toolkit |
+mise, ripgrep, fd, lazygit, tree-sitter, stow, starship
 
-**Tier 4 — sudo required**
+### Firefox
 
-| Module | Description |
-|---|---|
-| `sudo-tweaks.sh` | Enable sshd, configure GeoClue — runs last so a skipped password doesn't block anything |
+arkenfox `user.js` + overrides: blank new tab, session restore, compact UI, no Pocket.
+Manual installs: uBlock Origin, Bitwarden, Dark Reader, Vimium-FF.
 
----
+### rpm-ostree Layers
 
-## Flatpak Apps Installed
+Ghostty (COPR), ddcutil, gcc/make (for treesitter)
 
-- **Bazaar** — app browser / store UI
-- **Extension Manager** — GNOME extensions GUI
-- **Blanket** — ambient sound / focus
-- **dconf Editor** — low-level settings editor
-- **Deskflow** — KVM / keyboard+mouse sharing
-- **LocalSend** — local file transfer
-- **Whis** — speech-to-text
-- **VLC** — media player
-- **Moonlight** — game streaming client
-- **Signal** — encrypted messaging
-- **Syncthing GTK** — file sync GUI
-
-> Some Flatpak IDs are marked `# TODO: verify` in `install/flatpaks.sh` — confirm on Flathub before running.
+</details>
 
 ---
 
-## GNOME Extensions Installed
+## Manual Follow-Up
 
-- **GSConnect** — Android integration (KDE Connect)
-- **Just Perfection** — shell tweaks, animation speed
-- **Caffeine** — prevent screen lock
-- **Space Bar** — workspaces in top bar
-- **Vitals** — CPU/RAM/temp in top bar (installed but disabled by default)
-- **Rectangle** — window snapping (like macOS Rectangle)
-- **Hot Edge** — trigger activities overview by pushing cursor to screen edge
-- **Display Brightness (ddcutil)** — monitor brightness/contrast control via DDC/CI
-
----
-
-## Running Individual Modules
-
-Each script can be run standalone:
-
-```bash
-bash install/flatpaks.sh
-bash install/gnome.sh
-bash install/dev-tools.sh
-```
-
----
-
-## Items Requiring Manual Follow-Up
-
-- **Display resolution** — hardware-specific, set via Settings or `gnome-randr`
-- **Firefox extensions** — install manually from addons.mozilla.org (see `install/firefox.sh`)
-- **Extension dconf keys** — see [Future Work](#capture-real-extension-preferences) for the plan to capture and automate these
-
----
-
-## Post-Install Verification
-
-```bash
-flatpak list                              # GUI apps
-brew list                                 # CLI tools
-gnome-extensions list --enabled           # extensions
-ls ~/.mozilla/firefox/*.default*/user.js  # Firefox config
-ls ~/code/dotfiles                        # dotfiles
-ls ~/.config/nvim                         # stowed nvim config
-systemctl is-active sshd                  # SSH daemon
-```
-
----
-
-## After NVIDIA Install
-
-Reboot is required for rpm-ostree changes:
-
-```bash
-sudo systemctl reboot
-# after reboot:
-nvidia-smi
-```
+- **Display resolution** — hardware-specific, set via Settings
+- **Firefox extensions** — install from addons.mozilla.org
+- **Extension dconf keys** — capture with `dconf dump /org/gnome/shell/extensions/` once configured
 
 ---
 
 ## Philosophy
 
-This setup follows the same principles as [Universal Blue](https://universal-blue.org), [Bazzite](https://bazzite.gg), and [Bluefin](https://projectbluefin.io): treat the OS as reliable, immutable infrastructure and keep it as clean as possible. Don't fight the system — work with it.
+Follows the same principles as [Universal Blue](https://universal-blue.org) / [Bazzite](https://bazzite.gg) / [Bluefin](https://projectbluefin.io): treat the OS as immutable infrastructure, keep it clean.
 
-### Application installation hierarchy
+1. **Flatpak** — GUI apps (sandboxed, no system impact)
+2. **Homebrew** — CLI tools (installs to `/home/linuxbrew/`, outside the OS)
+3. **mise** — language runtimes (lighter alternative to Distrobox for version management)
+4. **rpm-ostree** — last resort (drivers, kernel modules only)
 
-1. **Flatpak first** — all GUI applications. Sandboxed, isolated, easy to remove, no impact on the base system.
-
-2. **Homebrew for CLI tools** — installs to `/home/linuxbrew/.linuxbrew`, completely outside the OS layer. Use this for anything terminal-based that isn't a Flatpak.
-
-3. **Distrobox for development** — rather than polluting the host with language runtimes or project dependencies, use a Distrobox container. This lets you `apt`, `dnf`, or `pacman` inside a container while keeping the host pristine. This setup installs mise as a lighter alternative for runtime version management.
-
-4. **rpm-ostree as a last resort** — layering packages onto the base system requires a reboot, pauses atomic updates, and can cause dependency conflicts. Only use it for true system-level drivers (NVIDIA) or kernel modules where nothing else works.
-
-### Why this matters
-
-On an immutable system like Silverblue, the base OS is read-only and managed atomically — upgrades are all-or-nothing and safe to roll back. Layering packages undermines that. The more you layer, the more you drift from the clean base, the harder upgrades become, and the more you lose the benefits that made Silverblue worth using in the first place.
-
-The goal is a system that stays clean over time: OS updated by rpm-ostree, GUI apps updated by `flatpak update`, CLI tools updated by `brew upgrade`, dev runtimes managed by mise. Each layer is independently updateable and easy to reason about.
-
----
-
-## Future Work
-
-### Capture real extension preferences
-
-Right now `install/extension-prefs.sh` only sets Just Perfection explicitly — Vitals and Space Bar fall back to extension defaults. Once a fully-configured machine is available, capture the real settings:
-
-```bash
-dconf dump /org/gnome/shell/extensions/ > /tmp/extension-settings.dconf
-cat /tmp/extension-settings.dconf
-```
-
-Then fill in the values for Vitals and Space Bar in `extension-prefs.sh`.
-
-At that point it's also worth considering migrating from `dconf write` to `gsettings set` (the approach omakub uses). `gsettings` is schema-aware and more robust, but requires copying each extension's gschema XML to `/usr/share/glib-2.0/schemas/` and running `glib-compile-schemas` — which needs a workaround on Silverblue since `/usr/` is read-only. Worth solving properly once the values are known.
+The goal: each layer updates independently (`flatpak update`, `brew upgrade`, `rpm-ostree upgrade`), and the system stays clean over time.

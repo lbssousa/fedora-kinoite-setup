@@ -101,7 +101,7 @@ run_module "NVIDIA drivers"      "$SCRIPT_DIR/install/nvidia.sh"
 # anything above)
 # ---------------------------------------------------------------------------
 
-run_module "SSH daemon" "$SCRIPT_DIR/install/sshd.sh"
+run_module "sudo tweaks" "$SCRIPT_DIR/install/sudo-tweaks.sh"
 
 # ---------------------------------------------------------------------------
 # Done

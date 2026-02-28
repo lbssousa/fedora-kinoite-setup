@@ -82,7 +82,7 @@ Runs in two tiers. Tier 1 finishes first so your dev environment is usable even 
 
 | Module | Description |
 |---|---|
-| `sshd.sh` | Enable sshd — runs last so a skipped password doesn't block anything |
+| `sudo-tweaks.sh` | Enable sshd, configure GeoClue — runs last so a skipped password doesn't block anything |
 
 ---
 
@@ -186,3 +186,20 @@ This setup follows the same principles as [Universal Blue](https://universal-blu
 On an immutable system like Silverblue, the base OS is read-only and managed atomically — upgrades are all-or-nothing and safe to roll back. Layering packages undermines that. The more you layer, the more you drift from the clean base, the harder upgrades become, and the more you lose the benefits that made Silverblue worth using in the first place.
 
 The goal is a system that stays clean over time: OS updated by rpm-ostree, GUI apps updated by `flatpak update`, CLI tools updated by `brew upgrade`, dev runtimes managed by mise. Each layer is independently updateable and easy to reason about.
+
+---
+
+## Future Work
+
+### Capture real extension preferences
+
+Right now `install/extension-prefs.sh` only sets Just Perfection explicitly — Vitals and Space Bar fall back to extension defaults. Once a fully-configured machine is available, capture the real settings:
+
+```bash
+dconf dump /org/gnome/shell/extensions/ > /tmp/extension-settings.dconf
+cat /tmp/extension-settings.dconf
+```
+
+Then fill in the values for Vitals and Space Bar in `extension-prefs.sh`.
+
+At that point it's also worth considering migrating from `dconf write` to `gsettings set` (the approach omakub uses). `gsettings` is schema-aware and more robust, but requires copying each extension's gschema XML to `/usr/share/glib-2.0/schemas/` and running `glib-compile-schemas` — which needs a workaround on Silverblue since `/usr/` is read-only. Worth solving properly once the values are known.

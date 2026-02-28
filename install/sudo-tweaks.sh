@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sshd.sh — sudo-required system tweaks
+# sudo-tweaks.sh — sudo-required system tweaks
 #
 # Runs last so a skipped or failed password prompt doesn't block anything else.
 

@@ -1,0 +1,28 @@
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials.json
+secrets.yaml
+
+# Dumps that may contain machine-specific data
+*.dconf
+extension-settings.txt
+result.txt
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+/tmp/
+*.zip
+*.tar.gz

@@ -46,6 +46,18 @@ FLATPAKS=(
 
   # Syncthing GTK — file sync GUI
   "me.kozec.syncthingtk"
+
+  # Flatseal — manage Flatpak permissions
+  "com.github.tchx84.Flatseal"
+
+  # Warehouse — Flatpak app manager (batch uninstall, data cleanup, etc.)
+  "io.github.flattool.Warehouse"
+
+  # Ignition — manage apps that launch at startup
+  "io.github.flattool.Ignition"
+
+  # Apostrophe — distraction-free markdown editor
+  "org.gnome.gitlab.somas.Apostrophe"
 )
 
 echo "Installing flatpaks..."

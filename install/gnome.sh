@@ -99,6 +99,9 @@ gsettings set org.gnome.shell.keybindings open-new-window-application-7 "['<Supe
 gsettings set org.gnome.shell.keybindings open-new-window-application-8 "['<Super><Control><Shift>8']"
 gsettings set org.gnome.shell.keybindings open-new-window-application-9 "['<Super><Control><Shift>9']"
 
+# Insert key → screenshot UI (in addition to Print Screen)
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "['Print', 'Insert']"
+
 # ---------------------------------------------------------------------------
 # Experimental features (VRR, scaling, etc.)
 # ---------------------------------------------------------------------------

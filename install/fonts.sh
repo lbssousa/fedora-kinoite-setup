@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# fonts.sh — Install Meslo LGS DZ Nerd Font from GitHub releases
+# fonts.sh — Install Meslo LGM DZ Nerd Font from GitHub releases
 #
 # Homebrew Cask font installs are macOS-only; on Linux we download directly
 # from the Nerd Fonts releases and install to ~/.local/share/fonts.
@@ -8,7 +8,7 @@
 FONT_DIR="$HOME/.local/share/fonts"
 
 # Check if already installed
-if fc-list | grep -qi "MesloLGSDZ.*Nerd"; then
+if fc-list | grep -qi "MesloLGMDZ.*Nerd"; then
   echo "Meslo LGS DZ Nerd Font already installed."
   exit 0
 fi

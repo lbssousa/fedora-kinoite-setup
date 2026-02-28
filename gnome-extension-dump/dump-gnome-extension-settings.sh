@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# dump.sh — Capture all GNOME extension settings from a live machine
+# dump-gnome-extension-settings.sh — Capture all GNOME extension settings from a live machine
 #
 # Run this on the target Bazzite/Silverblue desktop, then paste the output
 # into Claude with the prompt in README.md to fill in extension-prefs.sh.
 #
 # Usage:
-#   bash dump.sh
-#   bash dump.sh > my-extension-settings.txt   # save to file (recommended)
+#   bash dump-gnome-extension-settings.sh
+#   bash dump-gnome-extension-settings.sh > my-extension-settings.txt   # save to file (recommended)
 
 set -euo pipefail
 

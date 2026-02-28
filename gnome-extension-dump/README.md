@@ -11,7 +11,7 @@ desktop, formatted for pasting back into Claude to fill in
 Copy this directory to the target Bazzite machine, then:
 
 ```bash
-bash dump.sh > extension-settings.txt
+bash dump-gnome-extension-settings.sh > extension-settings.txt
 ```
 
 Open `extension-settings.txt` and paste it into a new Claude conversation
@@ -82,7 +82,7 @@ Paste this as your message, with the dump output appended after it:
 
 | File | Purpose |
 |---|---|
-| `dump.sh` | Run on the target Bazzite machine |
+| `dump-gnome-extension-settings.sh` | Run on the target Bazzite machine |
 | `README.md` | This file — instructions and Claude prompt |
 
 ---

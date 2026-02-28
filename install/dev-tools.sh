@@ -18,9 +18,12 @@ if ! command -v starship &>/dev/null; then
   brew install starship
 fi
 
-if ! grep -q 'starship init bash' ~/.bashrc 2>/dev/null; then
+if ! grep -q 'STARSHIP_CONFIG' ~/.bashrc 2>/dev/null; then
   echo "" >> ~/.bashrc
   echo "# starship prompt" >> ~/.bashrc
+  echo "# Config is stowed to ~/.config/starship/starship.toml (subdirectory)," >> ~/.bashrc
+  echo "# but starship only checks ~/.config/starship.toml by default." >> ~/.bashrc
+  echo 'export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"' >> ~/.bashrc
   echo 'eval "$(starship init bash)"' >> ~/.bashrc
   echo "Added starship hook to ~/.bashrc"
 fi

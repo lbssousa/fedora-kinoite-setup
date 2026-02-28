@@ -37,15 +37,26 @@ gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 # ---------------------------------------------------------------------------
 # Ctrl+Alt+T → Ghostty
 # GNOME custom keybindings require setting the list and each entry separately.
-KBPATH="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+KB0="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+KB1="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
-  "['${KBPATH}']"
-gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KBPATH}" \
+  "['${KB0}', '${KB1}']"
+
+# Ctrl+Alt+T → Ghostty
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KB0}" \
   name 'Terminal'
-gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KBPATH}" \
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KB0}" \
   command 'ghostty'
-gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KBPATH}" \
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KB0}" \
   binding '<Control><Alt>t'
+
+# Ctrl+Alt+W → Whis dictation toggle
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KB1}" \
+  name 'Whis Dictation'
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KB1}" \
+  command 'flatpak run ink.whis.Whis --toggle'
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KB1}" \
+  binding '<Control><Alt>w'
 
 # ---------------------------------------------------------------------------
 # Display resolution — hardware-specific, must be set manually.

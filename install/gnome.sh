@@ -6,6 +6,10 @@ echo "Applying GNOME settings..."
 # Dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
+# Wallpaper — GNOME's "Drool" (dark variant for dark mode)
+gsettings set org.gnome.desktop.background picture-uri 'file:///usr/share/backgrounds/gnome/drool-l.svg'
+gsettings set org.gnome.desktop.background picture-uri-dark 'file:///usr/share/backgrounds/gnome/drool-d.svg'
+
 # Clock: 12-hour time only, no date
 gsettings set org.gnome.desktop.interface clock-format '12h'
 gsettings set org.gnome.desktop.interface clock-show-date false

@@ -31,7 +31,7 @@ fi
 
 # Point CC at brew's versioned gcc so treesitter can find it
 if ! grep -q 'export CC=' ~/.bashrc 2>/dev/null; then
-  BREW_GCC="$(ls "$BREW_PREFIX/bin"/gcc-[0-9]* 2>/dev/null | grep -v '\-ar\|\-nm\|\-ranlib' | sort -V | tail -1)"
+  BREW_GCC="$(ls "$BREW_PREFIX/bin"/gcc-[0-9]* 2>/dev/null | grep -vE '(-ar|-nm|-ranlib)-' | sort -V | tail -1)"
   if [ -n "$BREW_GCC" ]; then
     echo "" >> ~/.bashrc
     echo "# C compiler (brew gcc for neovim treesitter)" >> ~/.bashrc

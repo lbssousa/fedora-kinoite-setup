@@ -7,11 +7,11 @@ OVERRIDES_SRC="$SCRIPT_DIR/../configs/firefox/user-overrides.js"
 # ---------------------------------------------------------------------------
 # Locate Firefox and its profile directory
 #
-# Flatpak Firefox → ~/.var/app/org.mozilla.firefox/.mozilla/firefox/
-# System Firefox  → ~/.mozilla/firefox/
+# Flatpak Firefox  → ~/.var/app/org.mozilla.firefox/.mozilla/firefox/
+# System Firefox   → ~/.mozilla/firefox/  (upstream default)
+#                  → ~/.config/mozilla/firefox/  (Fedora patched)
 # ---------------------------------------------------------------------------
 FLATPAK_FIREFOX_DIR="$HOME/.var/app/org.mozilla.firefox/.mozilla/firefox"
-SYSTEM_FIREFOX_DIR="$HOME/.mozilla/firefox"
 
 # Determine which Firefox is installed and where its profile lives
 if flatpak list --columns=application 2>/dev/null | grep -q "^org.mozilla.firefox$"; then
@@ -19,7 +19,12 @@ if flatpak list --columns=application 2>/dev/null | grep -q "^org.mozilla.firefo
   FIREFOX_DIR="$FLATPAK_FIREFOX_DIR"
 elif command -v firefox &>/dev/null; then
   FIREFOX_CMD="firefox"
-  FIREFOX_DIR="$SYSTEM_FIREFOX_DIR"
+  # Fedora patches Firefox to use ~/.config/mozilla/firefox/
+  if [ -d "$HOME/.config/mozilla/firefox" ]; then
+    FIREFOX_DIR="$HOME/.config/mozilla/firefox"
+  else
+    FIREFOX_DIR="$HOME/.mozilla/firefox"
+  fi
 else
   echo "WARNING: Firefox not found (neither flatpak nor system install)."
   echo "  Install Firefox then re-run: bash install/firefox.sh"

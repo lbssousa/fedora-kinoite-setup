@@ -12,15 +12,32 @@ fi
 
 # ---------------------------------------------------------------------------
 # gcc + make — required by neovim treesitter to compile parsers
+#
+# Homebrew installs gcc as gcc-{version} (e.g. gcc-15) without a bare "gcc"
+# symlink. Treesitter checks $CC first, so we export that in the shell profile
+# to point at brew's versioned gcc.
 # ---------------------------------------------------------------------------
-if ! command -v gcc &>/dev/null; then
+BREW_PREFIX="$(brew --prefix)"
+
+if ! brew list gcc &>/dev/null; then
   echo "Installing gcc (needed by neovim treesitter)..."
   brew install gcc
 fi
 
-if ! command -v make &>/dev/null; then
+if ! brew list make &>/dev/null; then
   echo "Installing make (needed by neovim treesitter)..."
   brew install make
+fi
+
+# Point CC at brew's versioned gcc so treesitter can find it
+if ! grep -q 'export CC=' ~/.bashrc 2>/dev/null; then
+  BREW_GCC="$(ls "$BREW_PREFIX/bin"/gcc-[0-9]* 2>/dev/null | grep -v '\-ar\|\-nm\|\-ranlib' | sort -V | tail -1)"
+  if [ -n "$BREW_GCC" ]; then
+    echo "" >> ~/.bashrc
+    echo "# C compiler (brew gcc for neovim treesitter)" >> ~/.bashrc
+    echo "export CC=\"$BREW_GCC\"" >> ~/.bashrc
+    echo "Set CC=$BREW_GCC in ~/.bashrc"
+  fi
 fi
 
 # ---------------------------------------------------------------------------

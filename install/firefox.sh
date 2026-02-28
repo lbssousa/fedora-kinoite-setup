@@ -27,22 +27,45 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Launch Firefox headlessly to create the profile if it doesn't exist yet
+# Create Firefox profile if it doesn't exist yet
+#
+# Firefox needs a real graphical launch to reliably create a profile.
+# --headless doesn't work (especially Flatpak Firefox). We check for a
+# display session and launch Firefox visually if possible, otherwise bail
+# with instructions for the user to run this script later.
 # ---------------------------------------------------------------------------
 find_profile() {
   find "$FIREFOX_DIR" -maxdepth 1 \( -name "*.default-release" -o -name "*.default" \) -type d 2>/dev/null | head -1
 }
 
+has_display() {
+  # Check for a graphical session via multiple methods
+  if [ -n "${WAYLAND_DISPLAY:-}" ] || [ -n "${DISPLAY:-}" ]; then
+    return 0
+  fi
+  # systemd/logind session type check
+  if command -v loginctl &>/dev/null; then
+    local session_type
+    session_type="$(loginctl show-session "$(loginctl --no-legend | awk '/\b'"$USER"'\b/{print $1; exit}')" -p Type --value 2>/dev/null || true)"
+    [ "$session_type" = "wayland" ] || [ "$session_type" = "x11" ] && return 0
+  fi
+  return 1
+}
+
 if [ -z "$(find_profile)" ]; then
-  echo "No Firefox profile found — launching headlessly to initialize one..."
-  $FIREFOX_CMD --headless --no-remote >/dev/null 2>&1 &
+  if ! has_display; then
+    echo "WARNING: No graphical session detected — cannot create Firefox profile."
+    echo "  Open Firefox manually, close it, then re-run: bash install/firefox.sh"
+    return 0
+  fi
+
+  echo "No Firefox profile found — launching Firefox to create one..."
+  $FIREFOX_CMD --no-remote >/dev/null 2>&1 &
   FIREFOX_PID=$!
 
   # Poll up to 20 seconds for the profile to appear
   for i in $(seq 1 20); do
-    if [ -n "$(find_profile)" ]; then
-      break
-    fi
+    [ -n "$(find_profile)" ] && break
     sleep 1
   done
 

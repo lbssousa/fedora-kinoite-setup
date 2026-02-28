@@ -11,6 +11,19 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # ---------------------------------------------------------------------------
+# gcc + make — required by neovim treesitter to compile parsers
+# ---------------------------------------------------------------------------
+if ! command -v gcc &>/dev/null; then
+  echo "Installing gcc (needed by neovim treesitter)..."
+  brew install gcc
+fi
+
+if ! command -v make &>/dev/null; then
+  echo "Installing make (needed by neovim treesitter)..."
+  brew install make
+fi
+
+# ---------------------------------------------------------------------------
 # starship — install if not present, write shell hook
 # ---------------------------------------------------------------------------
 if ! command -v starship &>/dev/null; then

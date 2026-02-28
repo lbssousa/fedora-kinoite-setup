@@ -3,6 +3,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OVERRIDES_SRC="$SCRIPT_DIR/../configs/firefox/user-overrides.js"
+POLICIES_SRC="$SCRIPT_DIR/../configs/firefox/policies.json"
 
 # ---------------------------------------------------------------------------
 # Locate Firefox and its profile directory
@@ -86,6 +87,15 @@ if [ -z "$PROFILE_DIR" ]; then
 fi
 
 echo "Firefox profile: $PROFILE_DIR"
+
+# ---------------------------------------------------------------------------
+# Install Firefox policies (default search engine, etc.)
+# ---------------------------------------------------------------------------
+if [ -f "$POLICIES_SRC" ]; then
+  sudo mkdir -p /etc/firefox/policies
+  sudo cp "$POLICIES_SRC" /etc/firefox/policies/policies.json
+  echo "Firefox policies installed (DuckDuckGo default search)."
+fi
 
 # ---------------------------------------------------------------------------
 # Download arkenfox user.js

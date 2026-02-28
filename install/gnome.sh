@@ -29,6 +29,21 @@ gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enable
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 
 # ---------------------------------------------------------------------------
+# Custom keybindings
+# ---------------------------------------------------------------------------
+# Ctrl+Alt+T → Ghostty
+# GNOME custom keybindings require setting the list and each entry separately.
+KBPATH="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
+  "['${KBPATH}']"
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KBPATH}" \
+  name 'Terminal'
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KBPATH}" \
+  command 'ghostty'
+gsettings set "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${KBPATH}" \
+  binding '<Control><Alt>t'
+
+# ---------------------------------------------------------------------------
 # Display resolution — hardware-specific, must be set manually.
 # Uncomment and adjust for your monitor if needed:
 #

@@ -11,6 +11,21 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # ---------------------------------------------------------------------------
+# starship — install if not present, write shell hook
+# ---------------------------------------------------------------------------
+if ! command -v starship &>/dev/null; then
+  echo "Installing starship..."
+  brew install starship
+fi
+
+if ! grep -q 'starship init bash' ~/.bashrc 2>/dev/null; then
+  echo "" >> ~/.bashrc
+  echo "# starship prompt" >> ~/.bashrc
+  echo 'eval "$(starship init bash)"' >> ~/.bashrc
+  echo "Added starship hook to ~/.bashrc"
+fi
+
+# ---------------------------------------------------------------------------
 # mise shell hook
 # ---------------------------------------------------------------------------
 if ! grep -q 'mise activate' ~/.bashrc 2>/dev/null; then

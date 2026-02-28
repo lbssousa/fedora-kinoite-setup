@@ -124,9 +124,15 @@ if [ ${#FAILED_MODULES[@]} -gt 0 ]; then
 fi
 echo ""
 echo "  Manual follow-ups:"
-echo "    - Set display resolution (hardware-specific)"
+echo "    - Set device name and display resolution"
 echo "    - Configure extension preferences via Extension Manager"
 echo "    - Install Firefox extensions manually (see install/firefox.sh)"
-echo "    - Verify dconf extension keys (see install/extension-prefs.sh)"
 echo -e "\033[1;33m============================================================\033[0m"
 echo ""
+
+# Open GNOME Settings to the About page so the user can set their device
+# name and review system info before rebooting.
+if command -v gnome-control-center &>/dev/null; then
+  echo "Opening Settings → About (set your device name here)..."
+  gnome-control-center about &>/dev/null &
+fi

@@ -12,3 +12,7 @@ user_pref("browser.startup.page", 3);
 
 // Disable Pocket
 user_pref("extensions.pocket.enabled", false);
+
+// Disable OCSP hard-fail — Let's Encrypt shut down OCSP responders (2025),
+// so hard-fail breaks all LE certs. Firefox CRLite handles revocation instead.
+user_pref("security.OCSP.require", false);

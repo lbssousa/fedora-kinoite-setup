@@ -71,6 +71,16 @@ fi
 
 run_module "System basics"   "$SCRIPT_DIR/install/system.sh"
 run_module "Homebrew"        "$SCRIPT_DIR/install/brew.sh"
+
+# Brew is required by everything below — abort if it failed to install.
+if ! command -v brew &>/dev/null; then
+  echo ""
+  echo -e "\033[1;31m  FATAL: Homebrew is not available after install.\033[0m"
+  echo "  Cannot continue — dev-tools, dotfiles, and CLI tools all require brew."
+  echo "  Fix the brew install and re-run this script."
+  exit 1
+fi
+
 run_module "Developer tools" "$SCRIPT_DIR/install/dev-tools.sh"
 run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 

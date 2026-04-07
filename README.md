@@ -25,6 +25,16 @@ One reboot at the end.
 
 ---
 
+## Starting from a Mac (UTM)
+
+If you're running Fedora Silverblue in a UTM virtual machine on Apple Silicon, see [`utm/README.md`](utm/README.md). The setup script creates the VM, downloads the ISO, and syncs this repo into a shared folder so the guest can run `install.sh` automatically.
+
+```bash
+./utm/setup-vm.sh
+```
+
+---
+
 ## Manual Follow-Up
 
 - **Display resolution** — hardware-specific, set via Settings

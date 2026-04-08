@@ -15,10 +15,15 @@ print_banner
 # ---------------------------------------------------------------------------
 detect_variant() {
   if [ -f /run/ostree-booted ]; then
-    echo "Detected: Fedora Silverblue (ostree-based)"
+    # Distinguish Kinoite (KDE) from Silverblue (GNOME) and other variants
+    if grep -qi "kinoite" /etc/os-release 2>/dev/null; then
+      echo "Detected: Fedora Kinoite (ostree-based, KDE Plasma)"
+    else
+      echo "Detected: Fedora ostree-based system (Silverblue or variant)"
+    fi
     SILVERBLUE=true
   elif grep -qi "fedora" /etc/os-release 2>/dev/null; then
-    echo "Detected: Fedora (not Silverblue) — some rpm-ostree steps will be skipped or may need adaptation"
+    echo "Detected: Fedora (not ostree-based) — some rpm-ostree steps will be skipped or may need adaptation"
     SILVERBLUE=false
   else
     echo "WARNING: This does not appear to be a Fedora system."
@@ -91,27 +96,27 @@ run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 # these are independent — a failure in one doesn't affect the others.
 # ---------------------------------------------------------------------------
 
-run_module "Fonts"                 "$SCRIPT_DIR/install/fonts.sh"
-run_module "GNOME preferences"     "$SCRIPT_DIR/install/gnome.sh"
-run_module "Flatpaks"              "$SCRIPT_DIR/install/flatpaks.sh"
-run_module "GNOME extensions"      "$SCRIPT_DIR/install/extensions.sh"
-run_module "Extension preferences" "$SCRIPT_DIR/install/extension-prefs.sh"
-run_module "Firefox"               "$SCRIPT_DIR/install/firefox.sh"
-run_module "CLI tools"             "$SCRIPT_DIR/install/cli-tools.sh"
+run_module "Fonts"                "$SCRIPT_DIR/install/fonts.sh"
+run_module "KDE Plasma settings"  "$SCRIPT_DIR/install/plasma.sh"
+run_module "Flatpaks"             "$SCRIPT_DIR/install/flatpaks.sh"
+run_module "Firefox"              "$SCRIPT_DIR/install/firefox.sh"
+run_module "CLI tools"            "$SCRIPT_DIR/install/cli-tools.sh"
 
 # ---------------------------------------------------------------------------
 # Tier 3 — rpm-ostree layers (always staged last; single reboot covers all)
 # ---------------------------------------------------------------------------
 
-run_module "rpm-ostree packages" "$SCRIPT_DIR/install/rpm-ostree.sh"
-run_module "NVIDIA drivers"      "$SCRIPT_DIR/install/nvidia.sh"
+run_module "rpm-ostree packages"         "$SCRIPT_DIR/install/rpm-ostree.sh"
+run_module "NVIDIA SecureBoot keys"      "$SCRIPT_DIR/install/nvidia-secureboot.sh"
+run_module "NVIDIA drivers"              "$SCRIPT_DIR/install/nvidia.sh"
 
 # ---------------------------------------------------------------------------
 # Tier 4 — sudo-required steps (last, so a skipped password doesn't block
 # anything above)
 # ---------------------------------------------------------------------------
 
-run_module "sudo tweaks" "$SCRIPT_DIR/install/sudo-tweaks.sh"
+run_module "sudo tweaks"     "$SCRIPT_DIR/install/sudo-tweaks.sh"
+run_module "TPM2 LUKS unlock" "$SCRIPT_DIR/install/tpm2-luks.sh"
 
 # ---------------------------------------------------------------------------
 # Done
@@ -122,7 +127,7 @@ echo -e "\033[1;33m  Setup complete!\033[0m"
 echo ""
 if [ "$SILVERBLUE" = true ]; then
   echo -e "\033[1;31m  REBOOT REQUIRED\033[0m"
-  echo "  rpm-ostree changes (GNOME extensions, NVIDIA) take effect"
+  echo "  rpm-ostree changes (NVIDIA drivers, packages) take effect"
   echo "  after rebooting into the new deployment."
 fi
 if [ ${#FAILED_MODULES[@]} -gt 0 ]; then
@@ -134,15 +139,20 @@ if [ ${#FAILED_MODULES[@]} -gt 0 ]; then
 fi
 echo ""
 echo "  Manual follow-ups:"
-echo "    - Set device name and display resolution"
-echo "    - Configure extension preferences via Extension Manager"
+echo "    - Set device name: System Settings → About This System"
+echo "    - Set display resolution and scaling: System Settings → Display & Monitor"
 echo "    - Install Firefox extensions manually (see install/firefox.sh)"
+echo "    - If NVIDIA SecureBoot keys were enrolled: reboot and select"
+echo "      'Enroll MOK' on the blue screen, then re-run to install drivers"
 echo -e "\033[1;33m============================================================\033[0m"
 echo ""
 
-# Open GNOME Settings to the About page so the user can set their device
-# name and review system info before rebooting.
-if command -v gnome-control-center &>/dev/null; then
-  echo "Opening Settings → About (set your device name here)..."
-  gnome-control-center about &>/dev/null &
+# Open KDE System Settings to the About page so the user can set their
+# device name and review system info before rebooting.
+if command -v systemsettings6 &>/dev/null; then
+  echo "Opening System Settings → About This System..."
+  systemsettings6 about-distro &>/dev/null &
+elif command -v systemsettings5 &>/dev/null; then
+  echo "Opening System Settings..."
+  systemsettings5 &>/dev/null &
 fi

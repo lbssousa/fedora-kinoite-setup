@@ -3,7 +3,7 @@
 #
 # - Distrobox: installed via the official curl installer to ~/.local (no rpm-ostree)
 # - VSCode: installed via Homebrew using the ublue-os tap
-#   - Dev Containers extension configured to use podman
+#   - Dev Containers extension configured to use podman (daemonless, no socket needed)
 #   - vscode-distrobox helper for attaching VSCode to a distrobox container
 #   - vscode-container-config helper to generate per-container nameConfig JSON
 #     (with corrected capsh args for toolbx: adds --login and uses "bash" as $0)
@@ -23,13 +23,6 @@ else
     | sh -s -- --prefix ~/.local
   echo "Distrobox installed."
 fi
-
-# ---------------------------------------------------------------------------
-# Podman user socket — required by VSCode Dev Containers
-# ---------------------------------------------------------------------------
-echo "Enabling podman user socket..."
-systemctl --user enable --now podman.socket || \
-  echo "WARNING: failed to enable podman socket — Dev Containers may not work"
 
 # ---------------------------------------------------------------------------
 # VSCode — via ublue-os Homebrew tap

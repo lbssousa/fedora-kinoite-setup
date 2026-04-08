@@ -1,8 +1,0 @@
-{
-  "policies": {
-    "SearchEngines": {
-      "Default": "DuckDuckGo",
-      "Remove": ["Google", "Bing"]
-    }
-  }
-}

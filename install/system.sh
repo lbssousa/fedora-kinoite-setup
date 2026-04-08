@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# system.sh — Basic system setup: sshd, skip GNOME welcome tour
+# system.sh — Basic system setup: skip KDE Plasma welcome screen
 
-# Skip GNOME initial setup / welcome tour
-touch ~/.config/gnome-initial-setup-done
-
-gsettings set org.gnome.shell welcome-dialog-last-shown-version "9999"
-
-echo "GNOME welcome tour disabled."
+# Skip KDE Plasma Welcome screen on first login
+if command -v kwriteconfig6 &>/dev/null; then
+  kwriteconfig6 --file plasma-welcomerc --group "General" --key "LiveEnvironment" "false"
+  echo "KDE Plasma welcome screen disabled."
+elif command -v kwriteconfig5 &>/dev/null; then
+  kwriteconfig5 --file plasma-welcomerc --group "General" --key "LiveEnvironment" "false"
+  echo "KDE Plasma welcome screen disabled."
+else
+  echo "WARNING: kwriteconfig not found — skipping Plasma welcome screen disable."
+fi

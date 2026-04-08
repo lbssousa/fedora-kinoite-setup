@@ -99,6 +99,7 @@ run_module "Dotfiles"        "$SCRIPT_DIR/install/dotfiles.sh"
 run_module "Fonts"                "$SCRIPT_DIR/install/fonts.sh"
 run_module "KDE Plasma settings"  "$SCRIPT_DIR/install/plasma.sh"
 run_module "Flatpaks"             "$SCRIPT_DIR/install/flatpaks.sh"
+run_module "Editors"              "$SCRIPT_DIR/install/editors.sh"
 run_module "CLI tools"            "$SCRIPT_DIR/install/cli-tools.sh"
 
 # ---------------------------------------------------------------------------

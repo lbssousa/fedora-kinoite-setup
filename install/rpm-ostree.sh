@@ -21,24 +21,6 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Ghostty terminal emulator
-# No Flatpak available — official Silverblue method is COPR + rpm-ostree.
-# https://ghostty.org/docs/install/binary
-# ---------------------------------------------------------------------------
-if rpm -q ghostty &>/dev/null; then
-  echo "ghostty already installed."
-else
-  echo "Adding Ghostty COPR repository..."
-  . /etc/os-release
-  curl -fsSL \
-    "https://copr.fedorainfracloud.org/coprs/scottames/ghostty/repo/fedora-${VERSION_ID}/scottames-ghostty-fedora-${VERSION_ID}.repo" \
-    | sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:scottames:ghostty.repo > /dev/null
-
-  echo "Staging ghostty via rpm-ostree..."
-  sudo rpm-ostree install ghostty
-fi
-
-# ---------------------------------------------------------------------------
 # ddcutil — DDC/CI monitor control (brightness, contrast, etc.)
 # Requires i2c kernel module access; no Flatpak/brew equivalent for hardware use.
 # After reboot, add your user to the i2c group:

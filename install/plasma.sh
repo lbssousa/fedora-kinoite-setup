@@ -76,12 +76,6 @@ for i in 1 2 3 4 5 6; do
     --key "Window to Desktop $i" "Meta+Shift+$i,none,Window to Desktop $i"
 done
 
-# Ctrl+Alt+T → Ghostty terminal
-# Requires ghostty.desktop to be registered in the application database.
-# KDE Plasma picks this up from kglobalshortcutsrc after the next login.
-$KWC --file kglobalshortcutsrc --group "com.mitchellh.ghostty.desktop" \
-  --key "_launch" "Ctrl+Alt+T,none,Launch Ghostty"
-
 # ---------------------------------------------------------------------------
 # Monospace font — Meslo LGM DZ Nerd Font (installed by fonts.sh)
 # ---------------------------------------------------------------------------

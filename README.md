@@ -3,7 +3,7 @@
 Automated first-time desktop setup for Fedora Kinoite (KDE Plasma on ostree).
 Modular scripts in `install/`, orchestrated by `install.sh`.
 
-Installs: Homebrew, mise, starship, dotfiles (stow), Nerd Font, Flatpak apps, arkenfox Firefox, Ghostty (COPR), KDE Plasma settings, NVIDIA drivers + SecureBoot signing (if detected), TPM2 LUKS auto-unlock.
+Installs: Homebrew, mise, starship, dotfiles (stow), Nerd Font, Flatpak apps, KDE Plasma settings, NVIDIA drivers + SecureBoot signing (if detected), TPM2 LUKS auto-unlock.
 
 Each script can also be run standalone: `bash install/plasma.sh`
 
@@ -69,7 +69,6 @@ sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/<device>
 
 - **Device name** — System Settings → About This System
 - **Display resolution / scaling** — System Settings → Display & Monitor
-- **Firefox extensions** — install from addons.mozilla.org (see `install/firefox.sh`)
 
 ---
 

@@ -106,6 +106,7 @@ run_module "CLI tools"            "$SCRIPT_DIR/install/cli-tools.sh"
 # ---------------------------------------------------------------------------
 
 run_module "rpm-ostree packages"         "$SCRIPT_DIR/install/rpm-ostree.sh"
+run_module "Epson printer"               "$SCRIPT_DIR/install/epson.sh"
 run_module "NVIDIA SecureBoot keys"      "$SCRIPT_DIR/install/nvidia-secureboot.sh"
 run_module "NVIDIA drivers"              "$SCRIPT_DIR/install/nvidia.sh"
 

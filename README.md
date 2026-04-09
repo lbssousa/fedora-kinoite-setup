@@ -3,7 +3,7 @@
 Automated first-time desktop setup for Fedora Kinoite (KDE Plasma on ostree).
 Modular scripts in `install/`, orchestrated by `install.sh`.
 
-Installs: Homebrew, mise, starship, dotfiles (stow), Nerd Font, Flatpak apps, Epson printer software, KDE Plasma settings, NVIDIA drivers + SecureBoot signing (if detected), TPM2 LUKS auto-unlock, Distrobox, VSCode, Zed, Rust CLI tools, Firefox codecs, ddcutil.
+Installs: Homebrew, mise, starship, dotfiles (stow), Nerd Font, Flatpak apps, Epson printer software, KDE Plasma settings, NVIDIA drivers + SecureBoot signing (if detected), TPM2 LUKS auto-unlock, Distrobox, VSCode, Zed, Rust CLI tools, Firefox codecs, ddcutil, kio-gdrive (Google Drive in Dolphin).
 
 Each script can also be run standalone: `bash install/plasma.sh`
 
@@ -104,6 +104,20 @@ Additionally:
 | Ignition | Manage startup apps |
 | MissionCenter | System monitor (KDE-friendly) |
 | Haruna | Media player (KDE-native, built on libmpv) |
+
+---
+
+## Google Drive (kio-gdrive)
+
+`install/gdrive.sh` installs `kio-gdrive` via rpm-ostree and adds a **Google Drive** bookmark to Dolphin's sidebar.
+
+After rebooting into the new deployment:
+
+1. Open **System Settings → Online Accounts**
+2. Add your Google account
+3. Open **Dolphin** — *Google Drive* will appear in the sidebar and is accessible at `gdrive:/`
+
+The `kio-gdrive` package pulls in `kaccounts-integration` and `kaccounts-providers` as dependencies, which are required for the KDE Online Accounts Google provider.
 
 ---
 

@@ -3,7 +3,7 @@
 Automated first-time desktop setup for Fedora Kinoite (KDE Plasma on ostree).
 Modular scripts in `install/`, orchestrated by `install.sh`.
 
-Installs: Homebrew, mise, starship, dotfiles (stow), Nerd Font, Flatpak apps, Epson printer software, KDE Plasma settings, NVIDIA drivers + SecureBoot signing (if detected), TPM2 LUKS auto-unlock, Distrobox, VSCode, Zed, Rust CLI tools, Firefox codecs, ddcutil, kio-gdrive (Google Drive in Dolphin).
+Installs: Homebrew, mise, starship, dotfiles (stow), Nerd Font, Flatpak apps, Epson printer software, KDE Plasma settings, NVIDIA drivers + SecureBoot signing (if detected), TPM2 LUKS auto-unlock, Distrobox, VSCode, Zed, Rust CLI tools, Firefox codecs, kio-gdrive (Google Drive in Dolphin).
 
 Each script can also be run standalone: `bash install/plasma.sh`
 
@@ -139,20 +139,6 @@ Requires a reboot to take effect (staged via `rpm-ostree install`).
 `install/rpm-ostree.sh` layers packages that have no Flatpak or Homebrew equivalent:
 
 - **gcc + make** — required by Neovim Treesitter to compile parsers. Homebrew's gcc lacks system `libc` headers on Kinoite; the system gcc provides a complete toolchain.
-- **ddcutil** — DDC/CI monitor control (brightness, contrast, etc.) via I²C. After rebooting, add your user to the `i2c` group:
-
-  ```bash
-  sudo usermod -aG i2c $USER
-  ```
-
----
-
-## System tweaks
-
-`install/sudo-tweaks.sh` applies the following system-level changes (runs last to avoid blocking earlier steps on a skipped password prompt):
-
-- **GeoClue → BeaconDB** — replaces Mozilla Location Services with [BeaconDB](https://beacondb.net), an open-source, community-run Wi-Fi/cell location service. Writes `/etc/geoclue/conf.d/99-beacondb.conf`.
-- **sshd** — enabled and started via `systemctl enable --now sshd`.
 
 ---
 

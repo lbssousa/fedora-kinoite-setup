@@ -118,7 +118,6 @@ run_module "NVIDIA drivers"              "$SCRIPT_DIR/install/nvidia.sh"
 # anything above)
 # ---------------------------------------------------------------------------
 
-run_module "sudo tweaks"     "$SCRIPT_DIR/install/sudo-tweaks.sh"
 run_module "TPM2 LUKS unlock" "$SCRIPT_DIR/install/tpm2-luks.sh"
 
 # ---------------------------------------------------------------------------

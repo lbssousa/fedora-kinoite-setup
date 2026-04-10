@@ -4,7 +4,7 @@
 # Installs:
 #   epson-inkjet-printer-escpr  — Epson ESC/P-R inkjet driver (built from SRPM)
 #   epson-printer-utility       — Epson Printer Utility for Linux (binary RPM)
-#   com.epson.epsonscan2        — Epson Scan 2 (Flatpak)
+#   net.epson.epsonscan2        — Epson Scan 2 (Flatpak)
 #
 # The Epson download site uses Akamai CDN/WAF which blocks automated requests.
 # Downloads use User-Agent 'Firefox' to bypass the WAF, with a fallback to
@@ -46,7 +46,7 @@ rpm -q epson-printer-utility      &>/dev/null && UTILITY_INSTALLED=true
 if [ "$ESCPR_INSTALLED" = true ] && [ "$UTILITY_INSTALLED" = true ]; then
   echo "Epson printer RPMs already installed."
   echo "Installing Epson Scan 2 flatpak..."
-  flatpak install --noninteractive flathub com.epson.epsonscan2 2>/dev/null || \
+  flatpak install --noninteractive flathub net.epson.epsonscan2 2>/dev/null || \
     echo "WARNING: failed to install Epson Scan 2 flatpak — check the app ID."
   return 0
 fi
@@ -120,6 +120,8 @@ if [ "$ESCPR_INSTALLED" = false ]; then
     bash -c '
       set -euo pipefail
 
+      mkdir -p /root/.local/state
+
       dnf install -y \
         autoconf automake cups-devel gcc libtool rpm-build
 
@@ -154,7 +156,8 @@ if [ "$ESCPR_INSTALLED" = false ]; then
   fi
 
   echo "Staging epson-inkjet-printer-escpr via rpm-ostree..."
-  sudo rpm-ostree install --local "$ESCPR_RPM"
+  sudo mkdir -p /root/.local/state
+  sudo rpm-ostree install "$ESCPR_RPM"
 fi
 
 # ── Install epson-printer-utility binary RPM ─────────────────────────────
@@ -166,7 +169,7 @@ if [ "$UTILITY_INSTALLED" = false ]; then
   MACRO_FILE=/etc/rpm/macros.d/epson-nodigest.macro
   echo '%_pkgverify_level none' | sudo tee "$MACRO_FILE" > /dev/null
   echo "Staging epson-printer-utility via rpm-ostree..."
-  sudo rpm-ostree install --local "${BUILD_DIR}/epson-printer-utility.x86_64.rpm"
+  sudo rpm-ostree install "${BUILD_DIR}/epson-printer-utility.x86_64.rpm"
   sudo rm -f "$MACRO_FILE"
 fi
 
@@ -174,7 +177,7 @@ cleanup
 
 # ── Epson Scan 2 (Flatpak) ────────────────────────────────────────────────
 echo "Installing Epson Scan 2 via Flatpak..."
-flatpak install --noninteractive flathub com.epson.epsonscan2 || \
+flatpak install --noninteractive flathub net.epson.epsonscan2 || \
   echo "WARNING: failed to install Epson Scan 2 flatpak — check the app ID."
 
 echo "Epson software staged. Reboot to complete RPM installation."

@@ -115,6 +115,7 @@ if [ "$ESCPR_INSTALLED" = false ]; then
 
   podman run --rm \
     -v "${BUILD_DIR}:/build:z" \
+    -e HOME=/root \
     "registry.fedoraproject.org/fedora:${VERSION_ID}" \
     bash -c '
       set -euo pipefail

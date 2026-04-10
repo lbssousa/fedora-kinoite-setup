@@ -40,6 +40,11 @@ if [ "$TPM2_FOUND" != "true" ]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Ensure sudo credentials are cached before issuing multiple privileged calls
+# ---------------------------------------------------------------------------
+sudo -v || { echo "ERROR: sudo access required."; return 1; }
+
+# ---------------------------------------------------------------------------
 # Find the LUKS-encrypted device
 # ---------------------------------------------------------------------------
 find_luks_device() {

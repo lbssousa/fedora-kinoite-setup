@@ -249,7 +249,7 @@ if flatpak list --app 2>/dev/null | grep -q "dev.zed.Zed"; then
   echo "Zed already installed, skipping."
 else
   echo "Installing Zed (Flatpak)..."
-  flatpak install --user --noninteractive flathub dev.zed.Zed || \
+  flatpak install --noninteractive flathub dev.zed.Zed || \
     echo "WARNING: failed to install Zed — check the app ID or Flathub availability"
 fi
 
@@ -262,7 +262,7 @@ fi
 # ZED_FLATPAK_NO_ESCAPE=1 (the Flatpak default) prevents this; set it to 0
 # to allow Zed to run host-side tools directly from its terminal and tasks.
 echo "Configuring Zed Flatpak for host command access..."
-flatpak --user override --env=ZED_FLATPAK_NO_ESCAPE=0 dev.zed.Zed 2>/dev/null || \
+flatpak override --env=ZED_FLATPAK_NO_ESCAPE=0 dev.zed.Zed 2>/dev/null || \
   echo "WARNING: failed to override ZED_FLATPAK_NO_ESCAPE — distrobox/toolbox may not work from Zed terminal"
 
 # Configure Zed settings.json (Flatpak config location)

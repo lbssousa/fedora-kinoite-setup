@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # flatpaks.sh — Add Flathub remote and install GUI applications
 
-# Ensure Flathub is available (--user avoids polkit system-operation restrictions)
-flatpak remote-add --user --if-not-exists flathub \
+# Ensure Flathub is available
+flatpak remote-add --if-not-exists flathub \
   https://dl.flathub.org/repo/flathub.flatpakrepo
 
 echo "Flathub remote configured."
@@ -21,8 +21,7 @@ INSTALLED_FLATPAKS=$(flatpak list --columns=application 2>/dev/null)
 for app in "${REMOVE_FLATPAKS[@]}"; do
   if echo "$INSTALLED_FLATPAKS" | grep -q "^${app}$"; then
     echo "  Removing pre-installed flatpak: $app"
-    flatpak remove --user --noninteractive "$app" 2>/dev/null || \
-      flatpak remove --system --noninteractive "$app" 2>/dev/null || \
+    flatpak remove --noninteractive "$app" 2>/dev/null || \
       echo "  WARNING: could not remove $app"
   fi
 done
@@ -79,7 +78,7 @@ FLATPAKS=(
 echo "Installing flatpaks..."
 for app in "${FLATPAKS[@]}"; do
   echo "  Installing $app"
-  flatpak install --user --noninteractive flathub "$app" || \
+  flatpak install --noninteractive flathub "$app" || \
     echo "  WARNING: failed to install $app — check the app ID"
 done
 

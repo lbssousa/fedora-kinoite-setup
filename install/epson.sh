@@ -46,7 +46,7 @@ rpm -q epson-printer-utility      &>/dev/null && UTILITY_INSTALLED=true
 if [ "$ESCPR_INSTALLED" = true ] && [ "$UTILITY_INSTALLED" = true ]; then
   echo "Epson printer RPMs already installed."
   echo "Installing Epson Scan 2 flatpak..."
-  flatpak install --user --noninteractive flathub com.epson.epsonscan2 2>/dev/null || \
+  flatpak install --noninteractive flathub com.epson.epsonscan2 2>/dev/null || \
     echo "WARNING: failed to install Epson Scan 2 flatpak — check the app ID."
   return 0
 fi
@@ -173,7 +173,7 @@ cleanup
 
 # ── Epson Scan 2 (Flatpak) ────────────────────────────────────────────────
 echo "Installing Epson Scan 2 via Flatpak..."
-flatpak install --user --noninteractive flathub com.epson.epsonscan2 || \
+flatpak install --noninteractive flathub com.epson.epsonscan2 || \
   echo "WARNING: failed to install Epson Scan 2 flatpak — check the app ID."
 
 echo "Epson software staged. Reboot to complete RPM installation."

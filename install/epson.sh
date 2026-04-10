@@ -115,23 +115,21 @@ if [ "$ESCPR_INSTALLED" = false ]; then
 
   podman run --rm \
     -v "${BUILD_DIR}:/build:z" \
-    -e HOME=/root \
+    -e HOME=/tmp \
     "registry.fedoraproject.org/fedora:${VERSION_ID}" \
     bash -c '
       set -euo pipefail
 
-      mkdir -p /root/.local/state
-
       dnf install -y \
         autoconf automake cups-devel gcc libtool rpm-build
 
-      mkdir -p /root/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+      mkdir -p /tmp/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 
       # Install SRPM to extract spec + source tarball
-      rpm --define "_topdir /root/rpmbuild" -ivh \
+      rpm --define "_topdir /tmp/rpmbuild" -ivh \
         /build/epson-inkjet-printer-escpr.src.rpm
 
-      SPEC=/root/rpmbuild/SPECS/epson-inkjet-printer-escpr.spec
+      SPEC=/tmp/rpmbuild/SPECS/epson-inkjet-printer-escpr.spec
 
       # Patch 1: export CFLAGS before %configure / ./configure so that
       #          -Wno-implicit-function-declaration is present regardless of
@@ -140,11 +138,11 @@ if [ "$ESCPR_INSTALLED" = false ]; then
 
       # Build binary RPM; also override %optflags (used by %configure macro)
       rpmbuild -bb \
-        --define "_topdir /root/rpmbuild" \
+        --define "_topdir /tmp/rpmbuild" \
         --define "optflags -O2 -Wno-implicit-function-declaration" \
         "$SPEC"
 
-      find /root/rpmbuild/RPMS -name "*.rpm" -exec cp {} /build/ \;
+      find /tmp/rpmbuild/RPMS -name "*.rpm" -exec cp {} /build/ \;
     ' || { cleanup; return 1; }
 
   ESCPR_RPM=$(ls "${BUILD_DIR}"/epson-inkjet-printer-escpr-*.rpm 2>/dev/null \
@@ -156,7 +154,6 @@ if [ "$ESCPR_INSTALLED" = false ]; then
   fi
 
   echo "Staging epson-inkjet-printer-escpr via rpm-ostree..."
-  sudo mkdir -p /root/.local/state
   sudo rpm-ostree install "$ESCPR_RPM"
 fi
 

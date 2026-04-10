@@ -33,14 +33,14 @@ if ! command -v brew &>/dev/null; then
   return 1
 fi
 
-if brew list --cask code &>/dev/null || brew list code &>/dev/null; then
+if brew list --cask visual-studio-code-linux &>/dev/null; then
   echo "VSCode already installed via Homebrew, skipping."
 else
   echo "Tapping ublue-os/tap..."
   brew tap ublue-os/tap
 
   echo "Installing VSCode via Homebrew (ublue-os/tap)..."
-  brew install ublue-os/tap/code
+  brew install --cask ublue-os/tap/visual-studio-code-linux
 fi
 
 # ---------------------------------------------------------------------------

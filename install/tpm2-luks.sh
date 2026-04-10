@@ -44,10 +44,10 @@ fi
 # ---------------------------------------------------------------------------
 find_luks_device() {
   # 1. Check /etc/crypttab (most reliable post-install source)
-  if [ -f /etc/crypttab ]; then
+  if sudo test -f /etc/crypttab; then
     local ct_dev
-    ct_dev=$(awk '!/^#/ && NF>=2 {print $2; exit}' /etc/crypttab)
-    if [ -n "$ct_dev" ] && cryptsetup isLuks "$ct_dev" 2>/dev/null; then
+    ct_dev=$(sudo awk '!/^#/ && NF>=2 {print $2; exit}' /etc/crypttab)
+    if [ -n "$ct_dev" ] && sudo cryptsetup isLuks "$ct_dev" 2>/dev/null; then
       echo "$ct_dev"
       return
     fi
@@ -55,8 +55,8 @@ find_luks_device() {
     if echo "$ct_dev" | grep -q "^UUID="; then
       local uuid="${ct_dev#UUID=}"
       local resolved
-      resolved=$(blkid --uuid "$uuid" 2>/dev/null)
-      if [ -n "$resolved" ] && cryptsetup isLuks "$resolved" 2>/dev/null; then
+      resolved=$(sudo blkid --uuid "$uuid" 2>/dev/null)
+      if [ -n "$resolved" ] && sudo cryptsetup isLuks "$resolved" 2>/dev/null; then
         echo "$resolved"
         return
       fi
@@ -65,7 +65,7 @@ find_luks_device() {
 
   # 2. Scan all block partitions
   while IFS= read -r dev; do
-    if cryptsetup isLuks "$dev" 2>/dev/null; then
+    if sudo cryptsetup isLuks "$dev" 2>/dev/null; then
       echo "$dev"
       return
     fi
@@ -86,7 +86,7 @@ echo "LUKS device: $LUKS_DEVICE"
 # ---------------------------------------------------------------------------
 # Verify LUKS version is 2 (systemd-cryptenroll requires LUKS2)
 # ---------------------------------------------------------------------------
-LUKS_VERSION=$(cryptsetup luksDump "$LUKS_DEVICE" 2>/dev/null | awk '/^Version:/{print $2}')
+LUKS_VERSION=$(sudo cryptsetup luksDump "$LUKS_DEVICE" 2>/dev/null | awk '/^Version:/{print $2}')
 if [ "$LUKS_VERSION" != "2" ]; then
   echo "ERROR: $LUKS_DEVICE uses LUKS version $LUKS_VERSION."
   echo "  systemd-cryptenroll requires LUKS2."
@@ -98,7 +98,7 @@ fi
 # ---------------------------------------------------------------------------
 # Check whether a TPM2 token is already enrolled
 # ---------------------------------------------------------------------------
-if systemd-cryptenroll "$LUKS_DEVICE" 2>/dev/null | grep -q "tpm2"; then
+if sudo systemd-cryptenroll "$LUKS_DEVICE" 2>/dev/null | grep -q "tpm2"; then
   echo "TPM2 token is already enrolled in $LUKS_DEVICE."
   echo "  To re-enroll: sudo systemd-cryptenroll --wipe-slot=tpm2 $LUKS_DEVICE"
   echo "  Then re-run this script."

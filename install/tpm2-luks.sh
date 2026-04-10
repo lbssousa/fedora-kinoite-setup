@@ -52,17 +52,14 @@ find_luks_device() {
   if sudo test -f /etc/crypttab; then
     local ct_dev
     ct_dev=$(sudo awk '!/^#/ && NF>=2 {print $2; exit}' /etc/crypttab)
-    if [ -n "$ct_dev" ] && sudo cryptsetup isLuks "$ct_dev" 2>/dev/null; then
-      echo "$ct_dev"
-      return
-    fi
-    # Resolve UUID= references
-    if echo "$ct_dev" | grep -q "^UUID="; then
-      local uuid="${ct_dev#UUID=}"
-      local resolved
-      resolved=$(sudo blkid --uuid "$uuid" 2>/dev/null)
-      if [ -n "$resolved" ] && sudo cryptsetup isLuks "$resolved" 2>/dev/null; then
-        echo "$resolved"
+    if [ -n "$ct_dev" ]; then
+      # Resolve UUID= references before passing to cryptsetup
+      if echo "$ct_dev" | grep -q "^UUID="; then
+        local uuid="${ct_dev#UUID=}"
+        ct_dev=$(sudo blkid --uuid "$uuid" 2>/dev/null)
+      fi
+      if [ -n "$ct_dev" ] && sudo cryptsetup isLuks "$ct_dev" 2>/dev/null; then
+        echo "$ct_dev"
         return
       fi
     fi

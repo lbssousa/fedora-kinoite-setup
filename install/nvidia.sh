@@ -64,17 +64,24 @@ sudo rpm-ostree install nvidia-container-toolkit
 echo "Setting kernel arguments for NVIDIA..."
 KARGS_CURRENT=$(rpm-ostree kargs 2>/dev/null || true)
 
+KARGS_TO_ADD=()
 for karg in \
   "rd.driver.blacklist=nouveau" \
   "modprobe.blacklist=nouveau" \
   "nvidia-drm.modeset=1"; do
-  if echo "$KARGS_CURRENT" | grep -qF "$karg"; then
+  # Match the exact argument (space-delimited) to avoid false partial matches
+  # (e.g. nvidia-drm.modeset=0 must not satisfy nvidia-drm.modeset=1)
+  if echo " $KARGS_CURRENT " | grep -qF " $karg "; then
     echo "  $karg already set — skipping."
   else
-    sudo rpm-ostree kargs --append="$karg"
-    echo "  Added: $karg"
+    KARGS_TO_ADD+=("--append=$karg")
+    echo "  Queued: $karg"
   fi
 done
+
+if [ ${#KARGS_TO_ADD[@]} -gt 0 ]; then
+  sudo rpm-ostree kargs "${KARGS_TO_ADD[@]}"
+fi
 
 echo ""
 echo "NVIDIA setup staged. Reboot to apply."

@@ -50,19 +50,32 @@ resolve_nvidia_pkg() {
   # shellcheck disable=SC2064
   trap "rm -rf '$tmpdir'" RETURN
 
-  local repo_url="https://mirrors.rpmfusion.org/nonfree/fedora/${fedora_ver}/x86_64/"
+  # Direct baseurl for the RPM Fusion nonfree repo — used as a fallback when
+  # the repo is not yet present on the running system.
+  local repo_url="https://download1.rpmfusion.org/nonfree/fedora/releases/${fedora_ver}/Everything/x86_64/os/"
 
   echo "  Downloading nvidia-detect from RPM Fusion..."
-  if ! dnf download \
-      --disablerepo='*' \
-      --repofrompath="rpmfusion-nonfree-tmp,${repo_url}" \
-      --repo=rpmfusion-nonfree-tmp \
-      --nogpgcheck \
-      --destdir="${tmpdir}" \
-      nvidia-detect &>/dev/null; then
-    echo "  nvidia-detect download failed — defaulting to akmod-nvidia." >&2
-    echo "akmod-nvidia"
-    return
+  # Prefer the configured repo (available after enable_rpmfusion_repos); fall
+  # back to a direct --repofrompath URL on a fresh system.
+  if [[ -f /etc/yum.repos.d/rpmfusion-nonfree.repo ]]; then
+    dnf download \
+        --repo=rpmfusion-nonfree \
+        --destdir="${tmpdir}" \
+        nvidia-detect &>/dev/null || true
+  fi
+  # If the download above did not produce an RPM, try via --repofrompath.
+  if ! find "${tmpdir}" -maxdepth 1 -type f -name 'nvidia-detect-*.rpm' 2>/dev/null | grep -q .; then
+    if ! dnf download \
+        --disablerepo='*' \
+        --repofrompath="rpmfusion-nonfree-tmp,${repo_url}" \
+        --repo=rpmfusion-nonfree-tmp \
+        --nogpgcheck \
+        --destdir="${tmpdir}" \
+        nvidia-detect &>/dev/null; then
+      echo "  nvidia-detect download failed — defaulting to akmod-nvidia." >&2
+      echo "akmod-nvidia"
+      return
+    fi
   fi
 
   rpm_file=$(find "${tmpdir}" -maxdepth 1 -type f -name 'nvidia-detect-*.rpm' 2>/dev/null | head -1)
@@ -89,11 +102,33 @@ resolve_nvidia_pkg() {
 # ---------------------------------------------------------------------------
 # Install
 # ---------------------------------------------------------------------------
+_FEDORA_VER=$(rpm -E %fedora)
+_RPMFUSION_FREE_URL="https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${_FEDORA_VER}.noarch.rpm"
+_RPMFUSION_NONFREE_URL="https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${_FEDORA_VER}.noarch.rpm"
+
 echo "Enabling RPM Fusion repositories..."
 sudo rpm-ostree install \
-  "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
-  "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm" \
+  "$_RPMFUSION_FREE_URL" \
+  "$_RPMFUSION_NONFREE_URL" \
   || echo "RPM Fusion repos may already be enabled."
+
+# The layered RPM Fusion packages are only active after a reboot.  Extract
+# their .repo files now so that the running system can resolve package names
+# for subsequent rpm-ostree and dnf calls in this session.
+if ! compgen -G '/etc/yum.repos.d/rpmfusion-*.repo' > /dev/null 2>&1; then
+  echo "  Configuring RPM Fusion repos on running system..."
+  _rf_tmpdir=$(mktemp -d)
+  for _rf_url in "$_RPMFUSION_FREE_URL" "$_RPMFUSION_NONFREE_URL"; do
+    if curl -fsSL -o "$_rf_tmpdir/pkg.rpm" "$_rf_url" 2>/dev/null; then
+      (cd "$_rf_tmpdir" && rpm2cpio pkg.rpm | cpio -idm 2>/dev/null)
+      if ls "$_rf_tmpdir"/etc/yum.repos.d/*.repo &>/dev/null 2>&1; then
+        sudo cp "$_rf_tmpdir"/etc/yum.repos.d/*.repo /etc/yum.repos.d/
+      fi
+    fi
+  done
+  rm -rf "$_rf_tmpdir"
+fi
+unset _FEDORA_VER _RPMFUSION_FREE_URL _RPMFUSION_NONFREE_URL _rf_tmpdir _rf_url
 
 echo "Detecting compatible NVIDIA driver package for this GPU..."
 NVIDIA_PKG=$(resolve_nvidia_pkg)

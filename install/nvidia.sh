@@ -56,6 +56,26 @@ curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-contai
 echo "Installing NVIDIA container toolkit..."
 sudo rpm-ostree install nvidia-container-toolkit
 
+# ---------------------------------------------------------------------------
+# Kernel arguments
+# Blacklist nouveau to prevent it from grabbing the GPU before the NVIDIA
+# driver does, and enable nvidia-drm modesetting (required for Wayland KMS).
+# ---------------------------------------------------------------------------
+echo "Setting kernel arguments for NVIDIA..."
+KARGS_CURRENT=$(rpm-ostree kargs 2>/dev/null || true)
+
+for karg in \
+  "rd.driver.blacklist=nouveau" \
+  "modprobe.blacklist=nouveau" \
+  "nvidia-drm.modeset=1"; do
+  if echo "$KARGS_CURRENT" | grep -qF "$karg"; then
+    echo "  $karg already set — skipping."
+  else
+    sudo rpm-ostree kargs --append="$karg"
+    echo "  Added: $karg"
+  fi
+done
+
 echo ""
 echo "NVIDIA setup staged. Reboot to apply."
 echo "  After reboot: nvidia-smi  |  nvidia-ctk"

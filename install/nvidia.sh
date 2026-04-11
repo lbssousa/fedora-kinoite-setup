@@ -65,17 +65,17 @@ resolve_nvidia_pkg() {
     return
   fi
 
-  rpm_file=$(find "${tmpdir}" -maxdepth 1 -name 'nvidia-detect-*.rpm' 2>/dev/null | head -1)
+  rpm_file=$(find "${tmpdir}" -maxdepth 1 -type f -name 'nvidia-detect-*.rpm' 2>/dev/null | head -1)
   if [ -z "$rpm_file" ]; then
     echo "  nvidia-detect RPM not found — defaulting to akmod-nvidia." >&2
     echo "akmod-nvidia"
     return
   fi
 
-  pushd "$tmpdir" > /dev/null || return
+  pushd "$tmpdir" > /dev/null || { echo "  Failed to enter tmpdir — defaulting to akmod-nvidia." >&2; echo "akmod-nvidia"; return; }
   rpm2cpio "$rpm_file" | cpio -idm 2>/dev/null
   if [ -x "./usr/bin/nvidia-detect" ]; then
-    detected=$(./usr/bin/nvidia-detect 2>/dev/null | grep -o 'akmod-nvidia[^ ]*' | tail -1)
+    detected=$(./usr/bin/nvidia-detect 2>/dev/null | grep -o 'akmod-nvidia[[:alnum:]-]*' | tail -1)
   fi
   popd > /dev/null || true
 

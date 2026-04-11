@@ -53,6 +53,15 @@ sudo update-ca-trust
 curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
   | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
 
+# Pre-download the GPG key locally so rpm-ostree does not need to fetch it
+# over HTTPS (which can fail with SSL CA cert errors on Fedora Kinoite).
+echo "Downloading NVIDIA container toolkit GPG key..."
+curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey \
+  | sudo tee /etc/pki/rpm-gpg/RPM-GPG-KEY-nvidia-container-toolkit > /dev/null
+sudo sed -i \
+  's|gpgkey=https://nvidia.github.io/libnvidia-container/gpgkey|gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nvidia-container-toolkit|' \
+  /etc/yum.repos.d/nvidia-container-toolkit.repo
+
 echo "Installing NVIDIA container toolkit..."
 sudo rpm-ostree install nvidia-container-toolkit
 

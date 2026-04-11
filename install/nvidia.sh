@@ -135,13 +135,10 @@ NVIDIA_PKG=$(resolve_nvidia_pkg)
 echo "  Selected: $NVIDIA_PKG"
 
 # Derive the package suffix used by the xorg and CUDA companion packages
-# (e.g. "" for current, "-470xx" for legacy).
-NVIDIA_SUFFIX=""
-if [[ "$NVIDIA_PKG" == *"-470xx"* ]]; then
-  NVIDIA_SUFFIX="-470xx"
-elif [[ "$NVIDIA_PKG" == *"-390xx"* ]]; then
-  NVIDIA_SUFFIX="-390xx"
-fi
+# (e.g. "" for current, "-470xx" for legacy, "-580xx" for latest legacy).
+# Strip the "akmod-nvidia" prefix to get the suffix dynamically, so that any
+# future legacy branch (e.g. -580xx, -550xx) is handled automatically.
+NVIDIA_SUFFIX="${NVIDIA_PKG#akmod-nvidia}"
 
 echo "Installing NVIDIA drivers and CUDA..."
 sudo rpm-ostree install \

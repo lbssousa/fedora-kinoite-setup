@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# nvidia.sh — NVIDIA drivers, CUDA, and container toolkit via rpm-ostree
+# nvidia.sh — NVIDIA drivers and CUDA via rpm-ostree
 #
 # Runs automatically when NVIDIA hardware is detected and not in a VM.
+# Detects the appropriate driver series for the installed GPU and installs
+# the latest compatible version from RPM Fusion.
 # All changes require a reboot to take effect.
 
 # ---------------------------------------------------------------------------
@@ -34,6 +36,57 @@ if [ "${SILVERBLUE:-false}" != "true" ]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Detect the appropriate RPM Fusion driver package for this GPU.
+#
+# Downloads RPM Fusion's nvidia-detect tool via dnf (without installing it),
+# extracts it with rpm2cpio, and runs it against the host lspci output.
+# Returns the akmod package name (e.g. akmod-nvidia or akmod-nvidia-470xx).
+# Falls back to akmod-nvidia on any error.
+# ---------------------------------------------------------------------------
+resolve_nvidia_pkg() {
+  local fedora_ver tmpdir rpm_file detected
+  fedora_ver=$(rpm -E %fedora)
+  tmpdir=$(mktemp -d)
+  # shellcheck disable=SC2064
+  trap "rm -rf '$tmpdir'" RETURN
+
+  local repo_url="https://mirrors.rpmfusion.org/nonfree/fedora/${fedora_ver}/x86_64/"
+
+  echo "  Downloading nvidia-detect from RPM Fusion..."
+  if ! dnf download \
+      --disablerepo='*' \
+      --repofrompath="rpmfusion-nonfree-tmp,${repo_url}" \
+      --repo=rpmfusion-nonfree-tmp \
+      --nogpgcheck \
+      --destdir="${tmpdir}" \
+      nvidia-detect &>/dev/null; then
+    echo "  nvidia-detect download failed — defaulting to akmod-nvidia." >&2
+    echo "akmod-nvidia"
+    return
+  fi
+
+  rpm_file=$(find "${tmpdir}" -maxdepth 1 -name 'nvidia-detect-*.rpm' 2>/dev/null | head -1)
+  if [ -z "$rpm_file" ]; then
+    echo "  nvidia-detect RPM not found — defaulting to akmod-nvidia." >&2
+    echo "akmod-nvidia"
+    return
+  fi
+
+  pushd "$tmpdir" > /dev/null || return
+  rpm2cpio "$rpm_file" | cpio -idm 2>/dev/null
+  if [ -x "./usr/bin/nvidia-detect" ]; then
+    detected=$(./usr/bin/nvidia-detect 2>/dev/null | grep -o 'akmod-nvidia[^ ]*' | tail -1)
+  fi
+  popd > /dev/null || true
+
+  if [[ "$detected" == akmod-nvidia* ]]; then
+    echo "$detected"
+  else
+    echo "akmod-nvidia"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Install
 # ---------------------------------------------------------------------------
 echo "Enabling RPM Fusion repositories..."
@@ -42,28 +95,24 @@ sudo rpm-ostree install \
   "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm" \
   || echo "RPM Fusion repos may already be enabled."
 
+echo "Detecting compatible NVIDIA driver package for this GPU..."
+NVIDIA_PKG=$(resolve_nvidia_pkg)
+echo "  Selected: $NVIDIA_PKG"
+
+# Derive the package suffix used by the xorg and CUDA companion packages
+# (e.g. "" for current, "-470xx" for legacy).
+NVIDIA_SUFFIX=""
+if [[ "$NVIDIA_PKG" == *"-470xx"* ]]; then
+  NVIDIA_SUFFIX="-470xx"
+elif [[ "$NVIDIA_PKG" == *"-390xx"* ]]; then
+  NVIDIA_SUFFIX="-390xx"
+fi
+
 echo "Installing NVIDIA drivers and CUDA..."
 sudo rpm-ostree install \
-  akmod-nvidia \
-  xorg-x11-drv-nvidia \
-  xorg-x11-drv-nvidia-cuda
-
-echo "Adding NVIDIA container toolkit repository..."
-sudo update-ca-trust
-curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
-  | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
-
-# Pre-download the GPG key locally so rpm-ostree does not need to fetch it
-# over HTTPS (which can fail with SSL CA cert errors on Fedora Kinoite).
-echo "Downloading NVIDIA container toolkit GPG key..."
-curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey \
-  | sudo tee /etc/pki/rpm-gpg/RPM-GPG-KEY-nvidia-container-toolkit > /dev/null
-sudo sed -i \
-  's|gpgkey=https://nvidia.github.io/libnvidia-container/gpgkey|gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nvidia-container-toolkit|' \
-  /etc/yum.repos.d/nvidia-container-toolkit.repo
-
-echo "Installing NVIDIA container toolkit..."
-sudo rpm-ostree install nvidia-container-toolkit
+  "$NVIDIA_PKG" \
+  "xorg-x11-drv-nvidia${NVIDIA_SUFFIX}" \
+  "xorg-x11-drv-nvidia${NVIDIA_SUFFIX}-cuda"
 
 # ---------------------------------------------------------------------------
 # Kernel arguments
@@ -94,4 +143,4 @@ fi
 
 echo ""
 echo "NVIDIA setup staged. Reboot to apply."
-echo "  After reboot: nvidia-smi  |  nvidia-ctk"
+echo "  After reboot: nvidia-smi"
